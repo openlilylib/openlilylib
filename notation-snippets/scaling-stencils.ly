@@ -22,7 +22,27 @@
 % here goes the snippet: %
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% this doesn't work as adesired - noteheads become detached from stems.
+
+% todo: make it work with grobs specified with contexts, like "Score.MetronomeMark"
+scaleGrob =
+#(define-music-function (parser location grob-name x-factor y-factor)
+   (string? number? number?)
+   (_i "")
+   #{
+     \override $grob-name #'after-line-breaking =
+     #(lambda (grob)
+     (let* ((function (assoc-get 'stencil (ly:grob-basic-properties grob)))
+            (stencil (if function (function grob) point-stencil)))
+
+       (if (and function (ly:stencil? stencil) (grob::is-live? grob))
+           (ly:grob-set-property! grob 'stencil
+             (ly:stencil-scale stencil x-factor y-factor)))))
+   #})
+
 {
+  \scaleGrob NoteHead #0.5 #1
+
   <e' g'>4.
   \once \override Flag #'stencil =
   #(lambda (grob)
