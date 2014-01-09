@@ -118,6 +118,6 @@ OpXNoIII_piano_notes_lower = \relative d, {
   fs,8 a cs fs fs,4 r   | % 30
   <<
     { \voiceTwo cs'1 ~ cs4 }
-    \new Voice { \voiceOne a'4\rest <gs b>2 ( <fs a>4 <es gs>4) }
+    \new Voice { \voiceOne a'4\rest <gs b>2^\sf ( <fs a>4 <es gs>4) }
   >> \oneVoice r4 r2   | % 31-32
 }
