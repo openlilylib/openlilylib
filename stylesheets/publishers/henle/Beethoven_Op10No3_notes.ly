@@ -41,7 +41,7 @@ OpXNoIII_piano_notes_upper = \relative d' {
   r8 <d d'> r <e e'> r <fs fs'> r <g g'>   | % 19
   r8 <a a'> r <as as'> r <b b'> r <cs cs'>   | % 20
   <d d'>4-. r <e e'>-. r   | % 21
-  <fs fs'>2.\fermata fs,4   | % 22
+  <fs \parenthesize fs'>2.\fermata fs,4   | % 22
   d'2( fs)   | % 23
   d2( e8 d cs b)   | % 24
   as4-. as-. cs8( b as b)   | % 25
