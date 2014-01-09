@@ -34,7 +34,7 @@ OpXNoIII_piano_notes_upper = \relative d' {
   cs,8 a' b, g' a, fs' b, g'   | % 12
   a,8 fs' g, e' fs, d' g, e'   | % 13
   fs,8 d' fs, ds' g, e' a, fs'   | % 14
-  b,8 g' fs a g b <e,, g cs>4-.   | % 15
+  b,8 g' fs a g b <e,, g cs>4   | % 15
   <d fs d'>4 r r r8 d   | % 16
   r8 cs r b r a r cs   | % 17
   r8 d r fs r a r <cs, cs'>   | % 18
