@@ -206,7 +206,6 @@ class Snippet(QtCore.QObject):
         
         html = tmpl.detailDocHead
         html += tmpl.titleDoc(self)
-        html += tmpl.headerFieldDoc(self, 'snippet-description')
         html += tmpl.metaDoc(self)
         html += tmpl.statusDoc(self)
         html += tmpl.customDoc(self)

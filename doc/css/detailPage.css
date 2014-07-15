@@ -8,7 +8,6 @@ h1 {
 	
 
 div {
-	border: 1px solid;
 	padding: 0.5em;
 	margin-bottom: 1em;
 	-moz-border-radius:6px;
@@ -18,9 +17,25 @@ div {
 }
 
 div#title {
+	background-color: rgb(240, 250, 230);
+	padding: 0em;
+	margin: 0em;
+}
+
+div.header {
 	background-color: #203010;
 	color: rgb(240, 250, 230);
-	padding-top: 0em;
+	padding-left: 0.5em;
+	padding-right: 0.5em;
+	margin: 0em;
+}
+
+div.snippet-author {
+	padding: 0em;
+}
+
+div#title div.snippet-description {
+	margin-top: 1em;
 }
 
 div#meta, div#status, div.lilypond,div#custom-fields {

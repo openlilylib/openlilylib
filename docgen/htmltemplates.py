@@ -13,7 +13,7 @@ detailDocHead = ("<html>\n" +
 detailDocEnd = "</body>\n</html>"
 
 templates = {
-    'title': '<div id="title">{}</div>', 
+    'title': '<div id="title"><div class="header">{title}</div>{description}</div>', 
     'meta': '<div id="meta">\n' +
         '<h2>Metadata</h2>{}</div>', 
     'status-div': '<div id="status">\n' +
@@ -131,10 +131,11 @@ def statusDoc(snippet):
              'snippet-todo']))
 
 def titleDoc(snippet):
-    return templates['title'].format(fieldDocs(snippet, 
+    return templates['title'].format(title = fieldDocs(snippet, 
                 ['snippet-title', 
                  'snippet-short-description', 
-                 'snippet-author']))
+                 'snippet-author']), 
+                 description = headerFieldDoc(snippet, 'snippet-description'))
 
 def lilypondToHtml(code):
     """Return formatted LilyPond code as HTML.
