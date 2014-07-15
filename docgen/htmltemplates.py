@@ -18,7 +18,8 @@ templates = {
         '<h2>Metadata</h2>{}</div>', 
     'status-div': '<div id="status">\n' +
         '<h2>Status information</h2>\n' +
-        '{compat}\n{status}</div>', 
+        '<div class="lilypond-version"><span class="field-description">Code version: ' +
+        '</span>{version}</div>\n{compat}\n{status}</div>', 
     'custom-fields': '<div id="custom-fields">\n' +
         '<h2>Custom header fields</h2>\n{}</div>', 
     'definition-body': '<div class="lilypond">\n' +
@@ -35,6 +36,8 @@ templates = {
     'snippet-category': '<div class="snippet-category"><span class="field-description">' +
         'Category: </span>{}</div>', 
     'tags': '<div class="tags"><span class="field-description">Tag: {}</div>', 
+    'snippet-version': '<div class="lilypond-version"><span class="field-description">' +
+        'Code version: </span>{}</div>', 
     'first-lilypond-version': '<div class="lilypond-version"><span class="field-description">' +
         'First known version: </span>{}<br />', 
     'last-lilypond-version': '<span class="field-description">' +
@@ -126,6 +129,7 @@ def metaDoc(snippet):
 def statusDoc(snippet):
     return templates['status-div'].format(
         compat = compatibilityDoc(snippet), 
+        version = snippet.definition.version, 
         status = fieldDocs(snippet, 
             ['status', 
              'snippet-todo']))
