@@ -86,6 +86,10 @@ def compatibilityDoc(snippet):
     return fieldDocs(snippet, 
         ['first-lilypond-version', 
          'last-lilypond-version'], True)
+
+def customDoc(snippet):
+    result = ''
+    return result
     
 def definitionBody(snippet):
     return templates['definition-body'].format(

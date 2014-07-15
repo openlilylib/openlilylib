@@ -55,21 +55,28 @@ class SnippetDefinition(SnippetFile):
         # Define expected header fields
         # Fields that are still None after parsing
         # have not been defined in the snippet
-        self.headerFields = {
-            'snippet-title': None,
-            'snippet-short-description': None,
-            'snippet-author': None,
-            'snippet-source': None,
-            'snippet-description': None,
-            'snippet-category': None,
-            'tags': None,
-            'status': None,
-            'first-lilypond-version': None,
-            'last-lilypond-version': None,
-            'snippet-todo': None }
-            
+        self.initFieldNames()
+
         super(SnippetDefinition, self).__init__(owner, filename)
     
+    def initFieldNames(self):
+        self.stdFieldNames = [
+            'snippet-title', 
+            'snippet-short-description', 
+            'snippet-description', 
+            'snippet-author', 
+            'snippet-source', 
+            'snippet-category', 
+            'tags', 
+            'first-lilypond-version', 
+            'last-lilypond-version', 
+            'status', 
+            'snippet-todo']
+        self.custFieldNames = []
+        self.headerFields = {}
+        for f in self.stdFieldNames:
+            self.headerFields[f] = None
+
     def parseFile(self):
         i = 0
         while i < len(self.filecontent):
@@ -104,12 +111,18 @@ class SnippetDefinition(SnippetFile):
         self.parseHeader()
 
     def parseHeader(self):
+        self.initFieldNames()
         i = 0
         # read in fields
         while i < len(self.headercontent):
             i = self.readField(i)
         # handle the comma-separated-list fields
         self.splitFields(['snippet-author', 'tags', 'status'])
+        # parse custom header fields
+        for f in self.headerFields:
+            if not f in self.stdFieldNames:
+                self.custFieldNames.append(f)
+        self.custFieldNames.sort()
         # add snippet to lists for browsing by type
         self.owner.addToAuthors(self.headerFields['snippet-author'])
         self.owner.addToCategory(self.headerFields['snippet-category'])
@@ -191,6 +204,7 @@ class Snippet(QtCore.QObject):
         html += tmpl.headerFieldDoc(self, 'snippet-description')
         html += tmpl.metaDoc(self)
         html += tmpl.statusDoc(self)
+        html += tmpl.customDoc(self)
         html += tmpl.definitionBody(self)
         html += tmpl.detailDocEnd
         
