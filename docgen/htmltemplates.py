@@ -21,8 +21,10 @@ templates = {
         '{compat}\n{status}</div>', 
     'custom-fields': '<div id="custom-fields">\n' +
         '<h2>Custom header fields</h2>\n{}</div>', 
-    'definition-body': '<div id="lilypond">\n' +
-    '<h2>Snippet definition</h2><pre>{}</pre></div>', 
+    'definition-body': '<div class="lilypond">\n' +
+        '<h2>Snippet definition</h2><pre>{}</pre></div>', 
+    'example-body': '<div class="lilypond">\n' +
+        '<h2>Usage example</h2>\n<pre>{}</pre></div>', 
     'snippet-title': "<h1>{}</h1>", 
     'snippet-author': '<div class="snippet-author"><span class="field-description">' +
         'Author: </span>{}</div>', 
@@ -105,7 +107,15 @@ def customDoc(snippet):
     
 def definitionBody(snippet):
     return templates['definition-body'].format(
-            lilypondToHtml(''.join(snippet.definition.bodycontent)))
+        lilypondToHtml(''.join(snippet.definition.bodycontent)))
+    
+def exampleBody(snippet):
+    
+    if snippet.hasExample():
+        return templates['example-body'].format(
+            lilypondToHtml(''.join(snippet.example.filecontent)))
+    else:
+        return ''
     
 def metaDoc(snippet):
     return templates['meta'].format(fieldDocs(snippet, 

@@ -211,6 +211,7 @@ class Snippet(QtCore.QObject):
         html += tmpl.statusDoc(self)
         html += tmpl.customDoc(self)
         html += tmpl.definitionBody(self)
+        html += tmpl.exampleBody(self)
         html += tmpl.detailDocEnd
         
         return html

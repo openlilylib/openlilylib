@@ -23,7 +23,7 @@ div#title {
 	padding-top: 0em;
 }
 
-div#meta, div#status, div#lilypond,div#custom-fields {
+div#meta, div#status, div.lilypond,div#custom-fields {
 	background-color: rgb(240, 250, 230);
 }
 

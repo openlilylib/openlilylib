@@ -48,11 +48,6 @@ class MainWindow(QtGui.QMainWindow):
         # will later be used as an _editor_
 #        self.metadataWidget = metadata.MetadataWidget(self)
 
-        # Snippet's Usage Example
-        self.labelExample = QtGui.QLabel("Usage Example:")
-        self.teExample = QtGui.QTextEdit()
-        self.teExample.setReadOnly(True)
-
         # Documentation Viewer
         self.wvDocView = docview.DocView()
         self.wvDocView.settings().setUserStyleSheetUrl(QtCore.QUrl.fromLocalFile(os.path.join(appInfo.docPath, 'css', 'detailPage.css')))
@@ -79,12 +74,9 @@ class MainWindow(QtGui.QMainWindow):
         cl.addWidget(self.tvBrowse, 3, 0)
         # doc viewer
         cl.addWidget(self.wvDocView, 3, 2)
-        # usage example column
-        cl.addWidget(self.labelExample, 2, 3)
-        cl.addWidget(self.teExample, 3, 3)
         # button row
         cl.addWidget(self.pbReread, 5, 0)
-        cl.addWidget(self.pbExit, 5, 3)
+        cl.addWidget(self.pbExit, 5, 2)
         
         # complete layout
         centralWidget.setLayout(centralLayout)
@@ -138,9 +130,7 @@ class MainWindow(QtGui.QMainWindow):
         self.modelBrowse.appendRow(byAuthor)
 
     def showSnippet(self, snippet):
-        self.teExample.setText(''.join(snippet.example.filecontent))
-        html = snippet.htmlDetailPage()
-        self.wvDocView.setHtml(html)
+        self.wvDocView.setHtml(snippet.htmlDetailPage())
         
     def snippetRowClicked(self, index):
         """When clicking on a row with a snippet name
