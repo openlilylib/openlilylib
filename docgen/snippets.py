@@ -191,6 +191,9 @@ class Snippet(QtCore.QObject):
     def addToTags(self, tags):
         self.owner.addTo(self.owner.tags, self.name, tags)
         
+    def hasCustomHeaderFields(self):
+        return len(self.definition.custFieldNames) > 0
+        
     def hasExample(self):
         """return true if an example is defined."""
         return True if (self.example is not None) else False

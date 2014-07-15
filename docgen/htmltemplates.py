@@ -19,6 +19,8 @@ templates = {
     'status-div': '<div id="status">\n' +
         '<h2>Status information</h2>\n' +
         '{compat}\n{status}</div>', 
+    'custom-fields': '<div id="custom-fields">\n' +
+        '<h2>Custom header fields</h2>\n{}</div>', 
     'definition-body': '<div id="lilypond">\n' +
     '<h2>Snippet definition</h2><pre>{}</pre></div>', 
     'snippet-title': "<h1>{}</h1>", 
@@ -39,6 +41,9 @@ templates = {
         'Snippet Status: </span>{}</div>', 
     'snippet-todo': '<div class="snippet-todo"><span class="field-description">' +
         'To do / Bugs / Feature requests:</span><br />{}</div>',
+    'custom-field': '<div class="custom-field"><span class="field-description">' +
+        '{title}: </span>{value}</div>', 
+    
     'lilypond-code': '<pre class="lilypond">{}</pre>'
     }
 
@@ -89,6 +94,13 @@ def compatibilityDoc(snippet):
 
 def customDoc(snippet):
     result = ''
+    if snippet.hasCustomHeaderFields():
+        fields = ''
+        for f in snippet.definition.custFieldNames:
+            fields += templates['custom-field'].format(
+                title = f, 
+                value = snippet.definition.headerFields[f])
+        result = templates['custom-fields'].format(fields)
     return result
     
 def definitionBody(snippet):
