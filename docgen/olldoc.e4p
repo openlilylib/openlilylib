@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.6.dtd">
 <!-- eric4 project file for project olldoc -->
-<!-- Saved: 2014-07-15, 12:27:56 -->
+<!-- Saved: 2014-07-16, 18:51:55 -->
 <!-- Copyright (C) 2014 Urs Liska, ul@openlilylib.org -->
 <Project version="4.6">
   <Language>en</Language>
@@ -17,8 +17,8 @@
     <Source>snippets.py</Source>
     <Source>metadata.py</Source>
     <Source>docview.py</Source>
-    <Source>htmltemplates.py</Source>
     <Source>detailPage.css</Source>
+    <Source>html.py</Source>
   </Sources>
   <Forms>
   </Forms>
