@@ -6,7 +6,6 @@ import re
 from PyQt4 import QtCore
 
 import __main__
-import htmltemplates as tmpl
 
 class SnippetFile(QtCore.QObject):
     """Snippet file (both definition and usage example.
@@ -181,6 +180,7 @@ class Snippet(QtCore.QObject):
         defFilename = os.path.join(__main__.appInfo.defPath, name) + '.ily'
         self.definition = SnippetDefinition(self, defFilename)
         self.example = None
+        self.html = None
 
     def addExample(self):
         """Read an additional usage-example."""
@@ -203,20 +203,16 @@ class Snippet(QtCore.QObject):
         """return true if an example is defined."""
         return True if (self.example is not None) else False
     
-    def htmlDetailPage(self):
+    def htmlDetailPage(self, inline = True):
         """Return HTML for a documentation detail page."""
-        hf = self.definition.headerFields
+        import html
+        htmlClass = html.HtmlInline if inline else html.HtmlFile
+            
+        if (self.html is None) or not (isinstance(self.html, htmlClass)):
+            self.html = htmlClass(self)
         
-        html = tmpl.detailDocHead
-        html += tmpl.titleDoc(self)
-        html += tmpl.metaDoc(self)
-        html += tmpl.statusDoc(self)
-        html += tmpl.customDoc(self)
-        html += tmpl.definitionBody(self)
-        html += tmpl.exampleBody(self)
-        html += tmpl.detailDocEnd
+        return self.html.page()
         
-        return html
 
 class Snippets(QtCore.QObject):
     """Object holding a dictionary of snippets"""

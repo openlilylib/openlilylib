@@ -1,75 +1,46 @@
-body {
 
+h1, h2, h3 {
+	font-family: sans-serif;
+	margin-top: 0em;
+	margin-bottom: 0em;
+	padding: 0.25em;
 }
 
-h1 {
-	font-family: sans
-}
-	
-
-div {
-	padding: 0.5em;
-	margin-bottom: 1em;
-	-moz-border-radius:6px;
-	-webkit-border-radius:6px;
-	border-radius:6px;
-	padding-top: 0em;
-}
-
-div#title {
-	background-color: rgb(240, 250, 230);
-	padding: 0em;
-	margin: 0em;
-}
-
-div.header {
+h2.section {
 	background-color: #203010;
 	color: rgb(240, 250, 230);
-	padding-left: 0.5em;
-	padding-right: 0.5em;
-	margin: 0em;
 }
 
-div.snippet-author {
-	padding: 0em;
-}
-
-div#title div.snippet-description {
-	margin-top: 1em;
-}
-
-div#meta, div#status, div.lilypond,div#custom-fields {
-	background-color: rgb(240, 250, 230);
-}
-
-div#title div,
-div#meta div,
-div#status div,
-div#custom-fields div {
-	margin: 0px;
-	border: 0px;
-}
-
-div.snippet-author {
-	}
-
-div.snippet-description {
-	-moz-border-radius:0px;
-	-webkit-border-radius:0px;
-	border-radius:0px;
-	border: 0px;
-	margin-bottom: 0px;
-}
-
-pre.lilypond {
+div.container {
+	border: 1px solid;
+	margin-bottom: 0.75em;
 	background-color: rgb(240, 250, 230);
 	-moz-border-radius:6px;
 	-webkit-border-radius:6px;
 	border-radius:6px;
-	padding: 1em;
 }
+
+div.container div {
+	padding: 0.5em;
+}
+
+div.container div.snippet-header {
+	background-color: #203010;
+	color: rgb(240, 250, 230);
+	padding-bottom: 0.25em;
+}
+
+pre {
+	padding-left: 0.5em;
+	padding-right: 0.5em;
+}
+
 
 span.field-description {
 	font-family: sans-serif;
-	font-weight: bold;
+	font-style: italic;
+}
+
+span.field-content {
+	/**/
 }
