@@ -67,10 +67,11 @@ class SnippetDefinition(SnippetFile):
             'snippet-author', 
             'snippet-source', 
             'snippet-category', 
-            'tags', 
+            'snippet-tags', 
+            'snippet-version', 
             'first-lilypond-version', 
             'last-lilypond-version', 
-            'status', 
+            'snippet-status', 
             'snippet-todo']
         self.custFieldNames = []
         self.headerFields = {}
@@ -78,13 +79,14 @@ class SnippetDefinition(SnippetFile):
             self.headerFields[f] = None
 
     def parseFile(self):
+        self.version = None
         i = 0
         while i < len(self.filecontent):
             line = self.filecontent[i]
             # Check for version string
-            if not self.version:
+            if self.version is None:
                 self.version = self.checkVersion(line)
-            
+                
             if line.strip().startswith('\\header'):
                 # Get the content of the \header section.
                 # ATTENTION: The section is considered finished when
@@ -112,12 +114,13 @@ class SnippetDefinition(SnippetFile):
 
     def parseHeader(self):
         self.initFieldNames()
+        self.headerFields['snippet-version'] = self.version
         i = 0
         # read in fields
         while i < len(self.headercontent):
             i = self.readField(i)
         # handle the comma-separated-list fields
-        self.splitFields(['snippet-author', 'tags', 'status'])
+        self.splitFields(['snippet-author', 'snippet-tags', 'snippet-status'])
         # parse custom header fields
         for f in self.headerFields:
             if not f in self.stdFieldNames:
@@ -126,7 +129,7 @@ class SnippetDefinition(SnippetFile):
         # add snippet to lists for browsing by type
         self.owner.addToAuthors(self.headerFields['snippet-author'])
         self.owner.addToCategory(self.headerFields['snippet-category'])
-        self.owner.addToTags(self.headerFields['tags'])
+        self.owner.addToTags(self.headerFields['snippet-tags'])
 
     def readField(self, i):
         while not re.search('(.*) =', self.headercontent[i]):

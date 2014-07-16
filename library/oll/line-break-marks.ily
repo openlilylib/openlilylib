@@ -10,8 +10,8 @@
   }
   snippet-category = "editorial-tools"
   % add comma-separated tags to make searching more effective:
-  tags = "markup,line breaks"
-  status = "ready"
+  snippet-tags = "markup,line breaks"
+  snippet-status = "ready"
   %{ TODO:
      Make appearance of line configurable through variables
      Optionally: Add more styles (dotted, arrows ...)

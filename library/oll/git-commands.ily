@@ -14,9 +14,9 @@
   }
   snippet-category = "project-management"
   % add comma-separated tags to make searching more effective:
-  tags = "versioning,project history, archiving"
+  snippet-tags = "versioning,project history, archiving"
   % is this snippet ready?  See meta/status-values.md
-  status = "unfinished, buggy"
+  snippet-status = "unfinished, buggy"
 
   %NOTE: This currently works on Linux only
 

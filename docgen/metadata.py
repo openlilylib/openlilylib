@@ -25,12 +25,12 @@ class MetadataWidget(QtGui.QFrame):
         
         # dictionary with display information
         self.fieldTitles = {
-            'status': ("Snippet status:",  
+            'snippet-status': ("Snippet status:",  
                         "Is the snippet finished?"), 
             'snippet-source': ("Snippet source:", 
                         "Reference to a discussion or other\n" +
                         "sources of inspiration."), 
-            'tags': ("Tags:", "Tags to sort and browse by"), 
+            'snippet-tags': ("Tags:", "Tags to sort and browse by"), 
             'snippet-short-description': ("Short description:", 
                         "Subheading telling what the snippet does."), 
             'snippet-todo': ("TODOs:", "Comments about bugs and feature requests."), 
@@ -52,10 +52,10 @@ class MetadataWidget(QtGui.QFrame):
             'snippet-author', 
             'snippet-source', 
             'snippet-category', 
-            'tags', 
+            'snippet-tags', 
             'first-lilypond-version', 
             'last-lilypond-version', 
-            'status', 
+            'snippet-status', 
             'snippet-todo']
         
         # list containing names of non-standard fields contained in the file.

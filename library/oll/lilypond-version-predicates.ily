@@ -19,16 +19,15 @@
     compare that to the version number of the running LilyPond.
   }
   snippet-category = "helpers"
-  tags = "control-flow,conditionals,compatibility,lilypond-version"
-  status = "ready"
+  snippet-tags = "control-flow,conditionals,compatibility,lilypond-version"
+  snippet-status = "ready"
 
   snippet-todo = "Typechecking for the ver-list argument"
 
-  test-field = "rrr"
-  test-field-2 = \markup {
-    This is a
-    multiline
-    test field entry
+  snippet-custom = "Test"
+  snippet-custom-2 = \markup {
+    Test
+    and go
   }
 }
 
