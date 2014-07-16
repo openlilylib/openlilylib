@@ -90,6 +90,11 @@ class MainWindow(QtGui.QMainWindow):
         self.snippets.read()
         #TEMPORARY
         self.displayTree()
+        
+    def saveSnippetsToHtml(self):
+        if not self.snippets:
+            self.readSnippets()
+        self.snippets.saveToHtml()
             
     def displayTree(self):
         """Build a tree for browsing the library

@@ -180,7 +180,7 @@ class Snippet(QtCore.QObject):
         defFilename = os.path.join(__main__.appInfo.defPath, name) + '.ily'
         self.definition = SnippetDefinition(self, defFilename)
         self.example = None
-        self.html = None
+        self._html = None
 
     def addExample(self):
         """Read an additional usage-example."""
@@ -203,15 +203,24 @@ class Snippet(QtCore.QObject):
         """return true if an example is defined."""
         return True if (self.example is not None) else False
     
-    def htmlDetailPage(self, inline = True):
-        """Return HTML for a documentation detail page."""
+    def html(self, inline = True):
         import html
         htmlClass = html.HtmlInline if inline else html.HtmlFile
             
-        if (self.html is None) or not (isinstance(self.html, htmlClass)):
-            self.html = htmlClass(self)
+        if (self._html is None) or not (isinstance(self._html, htmlClass)):
+            self._html = htmlClass(self)
+        return self._html
         
-        return self.html.page()
+    def htmlDetailPage(self, inline = True):
+        """Return HTML for a documentation detail page."""
+        
+        return self.html(inline).page()
+    
+    def saveHtml(self):
+        """Save HTML documentation for the snippet."""
+        # html() only created the object if necessary,
+        # so we make use of caching.
+        self.html(False).save()
         
 
 class Snippets(QtCore.QObject):
@@ -265,7 +274,7 @@ class Snippets(QtCore.QObject):
         # read all examples, ignore missing ones
         for x in xmps:
             self.snippets[x].addExample()
-
+    
     def readDirectory(self, dir, exts = []):
         """Read in the given dir and return a sorted list with
         all entries matching the given exts filter"""
@@ -276,6 +285,11 @@ class Snippets(QtCore.QObject):
                 result.append(file)
         result.sort()
         return result
+
+    def saveToHtml(self):
+        """Write out all snippets' documentation pages."""
+        for s in self.snippets:
+            self.snippets[s].saveHtml()
 
     # TEMPORARY
     # Create lists of the different items

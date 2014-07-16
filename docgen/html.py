@@ -2,8 +2,9 @@
 # -*- coding: utf-8
 
 from PyQt4 import QtCore, QtGui, QtWebKit
+import os
 import snippets
-import __main__
+from __main__ import appInfo
 
 class AbstractHtml(object):
     """Abstract class for HTML documentation objects"""
@@ -269,3 +270,13 @@ class HtmlFile(AbstractHtml):
         super(HtmlFile, self).__init__(snippet)
         self.stylesheets.append('css/detailPage.css')
     
+    def save(self):
+        """Save the file to disk.
+        Determine filename automatically from the snippet name
+        and use cached content if possible."""
+        filename = os.path.join(appInfo.docPath, self.snippet.name + '.html')
+        f = open(filename, 'w')
+        try:
+            f.write(self.page())
+        finally:
+            f.close()
