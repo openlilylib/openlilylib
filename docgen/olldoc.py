@@ -50,7 +50,8 @@ class MainWindow(QtGui.QMainWindow):
 
         # Documentation Viewer
         self.wvDocView = docview.DocView()
-        self.wvDocView.settings().setUserStyleSheetUrl(QtCore.QUrl.fromLocalFile(os.path.join(appInfo.docPath, 'css', 'detailPage.css')))
+        self.wvDocView.settings().setUserStyleSheetUrl(
+            QtCore.QUrl.fromLocalFile(os.path.join(appInfo.docPath, 'css', 'detailPage.css')))
         self.wvDocView.setHtml("<html><body><p>No snippet opened yet</p></body></html>")
         
         # Buttons
