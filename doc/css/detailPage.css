@@ -1,56 +1,5 @@
+/* Stylesheet for use in-app
+   Currently this only imports the main stylesheet */
 
-div#nav {
-	float: left;
-	width: 30%;
-}
+@import url(mainStyles.css);
 
-div#detail {
-	float: right;
-	width: 70%;
-}
-
-h1, h2, h3 {
-	font-family: sans-serif;
-	margin-top: 0em;
-	margin-bottom: 0em;
-	padding: 0.25em;
-}
-
-h2.section {
-	background-color: #203010;
-	color: rgb(240, 250, 230);
-}
-
-div.container {
-	border: 1px solid;
-	margin-bottom: 0.75em;
-	background-color: rgb(240, 250, 230);
-	-moz-border-radius:6px;
-	-webkit-border-radius:6px;
-	border-radius:6px;
-}
-
-div.container div {
-	padding: 0.5em;
-}
-
-div.container div.snippet-header {
-	background-color: #203010;
-	color: rgb(240, 250, 230);
-	padding-bottom: 0.25em;
-}
-
-pre {
-	padding-left: 0.5em;
-	padding-right: 0.5em;
-}
-
-
-span.field-description {
-	font-family: sans-serif;
-	font-style: italic;
-}
-
-span.field-content {
-	/**/
-}

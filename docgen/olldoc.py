@@ -86,7 +86,7 @@ class MainWindow(QtGui.QMainWindow):
     def readSnippets(self):
         # create, read and parse snippets
         if not self.snippets:
-            self.snippets = snippets.Snippets()
+            self.snippets = snippets.Snippets(self)
         self.snippets.read()
         #TEMPORARY
         self.displayTree()
@@ -137,6 +137,7 @@ class MainWindow(QtGui.QMainWindow):
 
     def showSnippet(self, snippet):
         self.wvDocView.setHtml(snippet.htmlDetailPage())
+        self.snippets.current = snippet.name
         
     def snippetRowClicked(self, index):
         """When clicking on a row with a snippet name
