@@ -2,6 +2,8 @@
    This is the main stylesheet for displaying content
 */
 
+@import url(ly.css);
+
 h1, h2, h3 {
 	font-family: sans-serif;
 	margin-top: 0em;

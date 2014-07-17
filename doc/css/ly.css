@@ -1,0 +1,277 @@
+#document {
+}
+
+/* base styles */
+.comment {
+  color: #808080;
+  font-style: italic;
+}
+
+.error {
+  color: #ff0000;
+  text-decoration: underline;
+  text-decoration-color: #ff0000;
+}
+
+.escape {
+  color: #008080;
+}
+
+.function {
+  color: #0000c0;
+  font-weight: bold;
+}
+
+.keyword {
+  font-weight: bold;
+}
+
+.string {
+  color: #c00000;
+}
+
+.value {
+  color: #808000;
+}
+
+.variable {
+  color: #0000ff;
+}
+
+/* mode: html */
+span.html-attribute {
+  
+}
+
+span.html-comment {
+  
+}
+
+span.html-entityref {
+  
+}
+
+span.html-lilypondtag {
+  
+}
+
+span.html-string {
+  
+}
+
+span.html-tag {
+  
+}
+
+span.html-value {
+  
+}
+
+/* mode: lilypond */
+span.lilypond-accidental {
+  
+}
+
+span.lilypond-articulation {
+  color: #ff8000;
+  font-weight: bold;
+}
+
+span.lilypond-beam {
+  
+}
+
+span.lilypond-check {
+  
+}
+
+span.lilypond-chord {
+  
+}
+
+span.lilypond-command {
+  
+}
+
+span.lilypond-comment {
+  
+}
+
+span.lilypond-context {
+  color: #c000c0;
+  font-weight: bold;
+}
+
+span.lilypond-delimiter {
+  
+}
+
+span.lilypond-duration {
+  color: #008080;
+}
+
+span.lilypond-dynamic {
+  color: #ff8000;
+  font-weight: bold;
+}
+
+span.lilypond-error {
+  
+}
+
+span.lilypond-figbass {
+  
+}
+
+span.lilypond-figbmodif {
+  
+}
+
+span.lilypond-figbstep {
+  
+}
+
+span.lilypond-fingering {
+  color: #ff8000;
+}
+
+span.lilypond-grob {
+  color: #c000c0;
+}
+
+span.lilypond-keyword {
+  
+}
+
+span.lilypond-lyricmode {
+  color: #006000;
+}
+
+span.lilypond-lyrictext {
+  color: #006000;
+}
+
+span.lilypond-markup {
+  color: #008000;
+  font-weight: normal;
+}
+
+span.lilypond-octave {
+  
+}
+
+span.lilypond-pitch {
+  
+}
+
+span.lilypond-property {
+  
+}
+
+span.lilypond-repeat {
+  
+}
+
+span.lilypond-slur {
+  color: #c000c0;
+  font-weight: bold;
+}
+
+span.lilypond-specifier {
+  
+}
+
+span.lilypond-string {
+  
+}
+
+span.lilypond-stringescape {
+  
+}
+
+span.lilypond-stringnumber {
+  color: #ff8000;
+}
+
+span.lilypond-usercommand {
+  
+}
+
+span.lilypond-uservariable {
+  
+}
+
+span.lilypond-value {
+  
+}
+
+span.lilypond-variable {
+  
+}
+
+/* mode: scheme */
+span.scheme-comment {
+  
+}
+
+span.scheme-constant {
+  
+}
+
+span.scheme-delimiter {
+  
+}
+
+span.scheme-function {
+  
+}
+
+span.scheme-keyword {
+  
+}
+
+span.scheme-lilypond {
+  color: #a04900;
+  font-weight: bold;
+}
+
+span.scheme-number {
+  
+}
+
+span.scheme-scheme {
+  color: #a04900;
+}
+
+span.scheme-string {
+  
+}
+
+span.scheme-variable {
+  
+}
+
+/* mode: texinfo */
+span.texinfo-attribute {
+  
+}
+
+span.texinfo-block {
+  
+}
+
+span.texinfo-comment {
+  
+}
+
+span.texinfo-escapechar {
+  
+}
+
+span.texinfo-keyword {
+  
+}
+
+span.texinfo-verbatim {
+  
+}
