@@ -225,8 +225,10 @@ class Snippet(QtCore.QObject):
 
 class Snippets(QtCore.QObject):
     """Object holding a dictionary of snippets"""
-    def __init__(self):
+    def __init__(self, owner):
         super(Snippets, self).__init__()
+        self.mainwindow = owner
+        self.current = ''
         self.initLists()
 
     def addTo(self, target, snippet, entry):
@@ -274,6 +276,10 @@ class Snippets(QtCore.QObject):
         # read all examples, ignore missing ones
         for x in xmps:
             self.snippets[x].addExample()
+        
+        # try to keep the current snippet open
+        if (self.current != '') and (self.current in self.names):
+            self.mainwindow.showSnippet(self.snippets[self.current])
     
     def readDirectory(self, dir, exts = []):
         """Read in the given dir and return a sorted list with
