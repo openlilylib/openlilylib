@@ -1,0 +1,19 @@
+/* openlilylib documentation browser/generator
+   stylesheet used for displaying html files in web browsers.
+   Implements column based page layout and uses web fonts. 
+*/
+
+@import url(mainStyles.css);
+@import url(navStyles.css);
+@import url(fonts.css);
+
+div#nav {
+	float: left;
+	width: 30%;
+}
+
+div#detail {
+	float: right;
+	width: 70%;
+}
+

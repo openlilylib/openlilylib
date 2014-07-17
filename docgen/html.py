@@ -269,7 +269,7 @@ class HtmlFile(AbstractHtml):
     """Snippets that will be printed to files."""
     def __init__(self, snippet):
         super(HtmlFile, self).__init__(snippet)
-        self.stylesheets.append('css/detailPage.css')
+        self.stylesheets.append('css/detailPage-file.css')
         self.templates['body'] = ('<div id="nav">\n' +
         '<h2>openlilylib</h2><pre>{nav}</pre>\n</div>\n' +
             '<div id="detail">{detail}</div>')
