@@ -139,8 +139,8 @@ class AbstractHtml(object):
             c = lst)
     
     def lilypondToHtml(self, code):
-        """Return formatted LilyPond code as HTML.
-        (This is a stub for a to-be-developed function)."""
+        """Return formatted LilyPond code as HTML if possible.
+        This works by using the python-ly module if it's installed."""
         
         # convert to string if code is passed as list
         if isinstance(code, list):
@@ -149,9 +149,20 @@ class AbstractHtml(object):
             for l in code:
                 tmp += l.rstrip() + '\n'
             code = tmp
+        try:
+            # generate formatted HTML if python-ly is installed
+            import ly.document, ly.colorize
+            lyDoc = ly.document.Document(code)
+            cursor = ly.document.Cursor(lyDoc)
+            writer = ly.colorize.HtmlWriter()
+            writer.full_html = False
+            code = writer.html(cursor).replace(
+                '<pre id="document">', '<pre class="lilypond">')
+        except ImportError:
+            # if python-ly isn't available we print plaintext output
+            code = self.templates['lilypond-code'].format(code)
             
-        #TODO: use Frescobaldi's ly-music module
-        return self.templates['lilypond-code'].format(code)
+        return code
 
     def section(self, name, content, title = ''):
         """Generate a section of the page.
