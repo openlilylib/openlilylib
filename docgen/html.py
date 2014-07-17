@@ -122,7 +122,9 @@ class AbstractHtml(object):
     def headContent(self):
         """Content of the <head> section.
         Empty if no stylesheets are defined."""
-        return self.stylesheetEntries()
+        html = '<title>{}</title>\n'.format(self.snippet.definition.headerFields['snippet-title'])
+        html += self.stylesheetEntries()
+        return html
     
     def itemList(self, fieldName, content):
         """Return HTML for a list of field values."""
