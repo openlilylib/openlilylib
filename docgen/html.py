@@ -264,12 +264,64 @@ class HtmlInline(AbstractHtml):
     def __init__(self, snippet):
         super(HtmlInline, self).__init__(snippet)
 
+
 class HtmlFile(AbstractHtml):
     """Snippets that will be printed to files."""
     def __init__(self, snippet):
         super(HtmlFile, self).__init__(snippet)
         self.stylesheets.append('css/detailPage.css')
+        self.templates['body'] = ('<div id="nav">\n' +
+        '<h2>openlilylib</h2><pre>{nav}</pre>\n</div>\n' +
+            '<div id="detail">{detail}</div>')
+        
+    def bodyContent(self):
+        return self.templates['body'].format(
+            nav = self.navContent(), 
+            detail = super(HtmlFile, self).bodyContent())
     
+    def navContent(self):
+        snippets = self.snippet.owner
+        html = '<div class="container"><h2>By name</h2>'
+        html += '<ul>\n'
+        for s in snippets.names:
+            html += '<li><a href="' + s + '.html">' + s + '</a></li>\n'
+        html += '</ul>\n</div>'
+        
+        html += '<div class="container"><h2>By category</h2>'
+        html += '<ul>\n'
+        
+        for c in snippets.categories['names']:
+            html += '<div>{}</div>'.format(c)
+            html += '<ul>\n'
+            for s in snippets.categories[c]:
+                html += '<li><a href="' + s + '.html">' + s + '</a></li>\n'
+            html += '</ul>\n'
+        html += '</ul>\n</div>'
+        
+        html += '<div class="container"><h2>By tag</h2>'
+        html += '<ul>\n'
+        
+        for c in snippets.tags['names']:
+            html += '<div>{}</div>'.format(c)
+            html += '<ul>\n'
+            for s in snippets.tags[c]:
+                html += '<li><a href="' + s + '.html">' + s + '</a></li>\n'
+            html += '</ul>\n'
+        html += '</ul>\n</div>'
+        
+        html += '<div class="container"><h2>By author</h2>'
+        html += '<ul>\n'
+        
+        for c in snippets.authors['names']:
+            html += '<div>{}</div>'.format(c)
+            html += '<ul>\n'
+            for s in snippets.authors[c]:
+                html += '<li><a href="' + s + '.html">' + s + '</a></li>\n'
+            html += '</ul>\n'
+        html += '</ul>\n</div>'
+        
+        return  html
+        
     def save(self):
         """Save the file to disk.
         Determine filename automatically from the snippet name
