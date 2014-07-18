@@ -201,7 +201,7 @@ class Snippet(QtCore.QObject):
         
     def hasExample(self):
         """return true if an example is defined."""
-        return True if (self.example is not None) else False
+        return True if self.example is not None else False
     
     def html(self, inline = True):
         import html
