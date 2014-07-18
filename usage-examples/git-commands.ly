@@ -1,116 +1,156 @@
-\include "definitions.ily"
+\version "2.16.0"
 
-\header {
-  title = "Git repository information"
+#(define moduleName "git-commands")
+\include "../includes/oll-example.ily"
+
+
+\markup \section "Usage:"
+
+\markup \justify { 
+  The generic function \ollCommand gitCommand can be used to invoke a Git
+  command and print its result. The command expects a string with the Git
+  command without the \typewriter git keyword, e.g. \typewriter 
+  { rev-parse --short HEAD }. Please note that only the first line of that
+  command will be considered. The result is returned as a \ollCommand markup
+  \ollCommand column{}. Please be very careful with commands that might 
+  actually \italic modify the repository because no checks will be done
+  whatsoever. You're on your own risk here!
 }
-
-\markup \vspace #2
-\markup \bold "Introduction"
-\markup \vspace #1
 
 \markup \justify {
-  When working on a project it is essential to tag printouts with at least
-  a date and maybe some version information, otherwise the copy is somewhat
-  worthless when it comes to proof-reading.
-  This is even more true when working under version control, as versioning actually
-  can provide you with much more detailed information on the version that is used
-  for creating a given PDF or printout.
+  Usually you will use one of the predefined commands listed below.
 }
-\markup \vspace #0.5
 
+\markup \section "Examples:"
 \markup \justify {
-  The commands in this snippet provide you with means to print exact versioning
-  information somewhere in your score, e.g. in the tagline.
-  Of course you should make sure that this doesn't influence the layout of
-  your score, otherwise you will run into problems once you want to remove
-  the versioning information from the printed result.
+  The module contains a number of predefined commands that you can use
+  immediately. Of course you can also take them as an inspiration to make
+  alternative uses of \ollCommand gitCommand or to write more predefined
+  commands. (Feel free to submit additional commands via pull requests
+  on the Github project site.
 }
 
-\markup \vspace #1.5
-\markup \bold "Examples"
 \markup \vspace #1
 
-\markup"Latest commit (committish): "
-\markup \bold \gitCommitish
-\markup \vspace #0.5
-
-\markup "Latest commit (shortlog):"
-\markup \bold \gitCommit
-\markup \vspace #0.5
-
-\markup "Latest commit (full message):"
+\markup \line {
+  \ollCommand gitCommitish
+  "- Latest commit (committish): "
+}
+\markup \typewriter \gitCommitish
 \markup \vspace #0.25
+
+\markup \line {
+  \ollCommand gitCommit
+  "- Latest commit (shortlog):"
+}
+\markup \typewriter \gitCommit
+\markup \null
+
+\markup \line {
+  \ollCommand gitFullCommit
+  - "Latest commit (full message):"
+}
+\markup \null
 \markup \small \typewriter \gitFullCommit
 \markup \vspace #0.25
-\markup \italic "(the formatting with typewriter font has been done manually)"
-\markup \vspace #0.5
+\markup \italic "(Note that the formatting with typewriter font has been done manually)"
+\markup \null
 
-\markup "Latest commit (date/time):"
-\markup \bold \gitDateTime
-\markup \vspace #0.5
-
-\markup "Latest commit (author):"
-\markup \bold \gitAuthor
-\markup \vspace #0.5
-
-\markup "Latest commit (email):"
-\markup \bold \gitEmail
-\markup \vspace #0.5
-
-\markup"Parent commit (committish): "
-\markup \bold \gitParentCommittish
-\markup \vspace #0.5
-
-\markup "Parent commit (shortlog):"
-\markup \bold \gitParentCommit
-\markup \vspace #0.5
-
-\markup "Current branch:"
-\markup \bold \gitBranch
-\markup \vspace #0.5
-
-\markup "Number of commits on this branch:"
-\markup\bold \gitRevisionNumber
-\markup \vspace #0.5
-
-% gitIsClean determines whether the current repository is clean,
-% but it only returns a boolean value. So if you want to display
-% something based on this information you'll have to create the
-% markup for yourself.
-#(define-markup-command (isClean layout props) ()
-   (if (gitIsClean)
-   (interpret-markup layout props
-       #{ \markup \bold "has no" #})
-   (interpret-markup layout props
-       #{ \markup \bold "does have" #})))
-
-\markup \concat { "Repository " \isClean " uncommitted changes" }
-\markup \vspace #0.25
-\markup \italic \justify {
-  (Please note that the 'gitIsClean' function only returns a
-  boolean value. If you want to display information such as the
-  above you will have to create the markup yourself.)
+\markup \line {
+  \ollCommand gitDateTime
+  "- Latest commit (date/time):"
 }
+\markup \typewriter \gitDateTime
+\markup \null
 
-%\markup \getgitresult "git status"
 
-\pageBreak
+\markup \line {
+  \ollCommand gitAuthor
+  "- Latest commit (author):"
+}
+\markup \typewriter \gitAuthor
+\markup \null
+
+\markup \line {
+  \ollCommand gitEmail
+  "- Latest commit (email):"
+}
+\markup \typewriter \gitEmail
+\markup \null
+
+\markup \line {
+  \ollCommand gitParentCommittish
+  "- Parent commit (committish):"
+}
+\markup \typewriter \gitParentCommittish
+\markup \null
+
+\markup \line {
+  \ollCommand gitParentCommit
+  "- Parent commit (shortlog):"
+}
+\markup \typewriter \gitParentCommit
+\markup \null
+
+\markup \line {
+  \ollCommand gitBranch
+  "- Current branch:"
+}
+\markup \typewriter \gitBranch
+\markup \null
+
+\markup \line {
+  \ollCommand gitRevisionNumber
+  "- Number of commits on this branch:"
+}
+\markup \typewriter \gitRevisionNumber
+\markup \null
+
+\markup \line {
+  \ollCommand gitIsClean
+  "- Is the working tree clean or does it have uncommitted changes?"
+}
+\markup \justify {
+  This command returns a boolean value depending on the output of \typewriter
+  { git status }. You can use its result as a condition for further action.
+  If you want to use it to print status information you have to build your
+  own markup command around it or use the following command with arguments.
+}
+\markup \vspace #1
+  
+\markup \line {
+  \ollCommand gitIsCleanMarkup
+  "- returns custom markup depending on the repository state."
+}
+\markup \justify {
+  This markup command takes two string arguments specifying the output strings
+  to be used for each of the two states. 
+}
+\markup \line { "The current repository" 
+                \bold \gitIsCleanMarkup "has no" "does have"
+                  "uncommitted changes" }
+\markup \vspace #0.25
+
 
 \markup \bold "Printing the full Git diff"
-\markup \vspace #0.5
+\markup \null
 \markup \justify {
   In some cases it may be interesting to print out a full diff
   against the latest commit. Usually one compiles scores
   \italic after modifying them and \italic before committing them.
   So if you really need to have a detailed documentation in the
   printout you can supply the full diff as an additional resource.
-  Of course it will make sense to provide it on a separat (last)
+  Of course it will make sense to provide it on a separate (last)
   page or even in a separate score or bookpart in order not to
   disturb the score layout. Please note that you're responsible
   yourself for any formatting.
 }
 
 \markup \vspace #1
-\markup
+
+ 
+\markup {
   \override #'(baseline-skip . 2)
-  \tiny \typewriter \gitDiff
+  \tiny \typewriter
+  \gitDiff
+}
