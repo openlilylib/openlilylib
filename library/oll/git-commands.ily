@@ -1,33 +1,53 @@
 \version "2.16.2"
 
+\include "oll-base.ily"
+
 \header {
   snippet-title = "Print Git repository information"
   snippet-author = "Urs Liska, Lars Haulin"
   snippet-source = "http://lilypondblog.org/2014/01/why-use-version-control-for-engraving-scores/#comment-34076"
-  snippet-description = \markup {
-    This snippet provides a number of commands to print information
-    about the current Git repository in scores. This can be used for
-    clearly indicating from which version a file has been compiled.
+  snippet-short-description = \markup {
+    Retrieve information about the Git status of a score.
+  }
+  snippet-description = \markup \justify {
+    When working on a score it is often necessary to mark the state of
+    development on a given intermediate state (printout or shared PDF).
+    Instead of simply adding a date it can be very useful to add information
+    about the Git revision if the document is in a version control repository.
 
-    The snippet has been started from an example given as a comment
-    on the Scores of Beauty blog (see 'snippet-source').
+    This module provides markup commands that retrieve information about the
+    current Git repository. It is not only possible to get information about
+    the current commit but also whether the repository is in a clean state
+    (i.e. whether the score represents the state of a commit or contains
+    modifications in the working tree).
+    
+    The generic command \ollCommand gitCommand can be used to issue arbitrary Git
+    commands. For a list of defined commands see the usage example.
   }
   snippet-category = "project-management"
   % add comma-separated tags to make searching more effective:
-  snippet-tags = "versioning,project history, archiving"
+  snippet-tags = "versioning,project-history,archiving"
   % is this snippet ready?  See meta/status-values.md
   snippet-status = "unfinished, buggy"
 
-  %NOTE: This currently works on Linux only
-
-  %{
-    TODO: complete a useful set of commands.
-    Wishlist:
-    - Autocommit on LilyPond run
-      !!!Is that a useful function? Or rather a dangerous one?
-    FIXME: Gracefully handle missing Git installation
-           Gracefully handle the file not being in a repository
-  %}
+   snippet-todo = \markup {
+     
+     - Gracefully handle missing Git installation
+     
+     - Gracefully handle the file not being in a repository
+     
+     - Complete a set of useful commands
+     
+     - Make it work on other operating systems.
+     
+     More ideas:
+     
+     - make commands work on specific commits
+       (take a committish as an optional argument)
+     
+     - Autocommit on LilyPond run???
+     
+   }
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%
