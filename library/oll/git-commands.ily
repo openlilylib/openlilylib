@@ -3,13 +3,13 @@
 \include "oll-base.ily"
 
 \header {
-  snippet-title = "Print Git repository information"
-  snippet-author = "Urs Liska, Lars Haulin"
-  snippet-source = "http://lilypondblog.org/2014/01/why-use-version-control-for-engraving-scores/#comment-34076"
-  snippet-short-description = \markup {
+  oll-title = "Print Git repository information"
+  oll-author = "Urs Liska, Lars Haulin"
+  oll-source = "http://lilypondblog.org/2014/01/why-use-version-control-for-engraving-scores/#comment-34076"
+  oll-short-description = \markup {
     Retrieve information about the Git status of a score.
   }
-  snippet-description = \markup \justify {
+  oll-description = \markup \justify {
     When working on a score it is often necessary to mark the state of
     development on a given intermediate state (printout or shared PDF).
     Instead of simply adding a date it can be very useful to add information
@@ -24,13 +24,13 @@
     The generic command \ollCommand gitCommand can be used to issue arbitrary Git
     commands. For a list of defined commands see the usage example.
   }
-  snippet-category = "project-management"
+  oll-category = "project-management"
   % add comma-separated tags to make searching more effective:
-  snippet-tags = "versioning,project-history,archiving"
+  oll-tags = "versioning,project-history,archiving"
   % is this snippet ready?  See meta/status-values.md
-  snippet-status = "unfinished, buggy"
+  oll-status = "unfinished, buggy"
 
-   snippet-todo = \markup {
+   oll-todo = \markup {
      
      - Gracefully handle missing Git installation
      

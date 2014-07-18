@@ -6,14 +6,14 @@
 
   bookTitleMarkup = \markup {
     \column {
-      { \bold \huge \fromproperty #'header:snippet-title }
-      { \fromproperty #'header:snippet-short-description }
+      { \bold \huge \fromproperty #'header:oll-title }
+      { \fromproperty #'header:oll-short-description }
       
-      \concat { \vspace #1.5 "Author(s): " \fromproperty #'header:snippet-author }
+      \concat { \vspace #1.5 "Author(s): " \fromproperty #'header:oll-author }
       \line { File to include: #includeName }
 
       \section "Introduction:"
-      \fromproperty  #'header:snippet-description
+      \fromproperty  #'header:oll-description
     }
   }
 }

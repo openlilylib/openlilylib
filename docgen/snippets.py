@@ -60,18 +60,18 @@ class SnippetDefinition(SnippetFile):
     
     def initFieldNames(self):
         self.stdFieldNames = [
-            'snippet-title', 
-            'snippet-short-description', 
-            'snippet-description', 
-            'snippet-author', 
-            'snippet-source', 
-            'snippet-category', 
-            'snippet-tags', 
-            'snippet-version', 
+            'oll-title', 
+            'oll-short-description', 
+            'oll-description', 
+            'oll-author', 
+            'oll-source', 
+            'oll-category', 
+            'oll-tags', 
+            'oll-version', 
             'first-lilypond-version', 
             'last-lilypond-version', 
-            'snippet-status', 
-            'snippet-todo']
+            'oll-status', 
+            'oll-todo']
         self.custFieldNames = []
         self.headerFields = {}
         for f in self.stdFieldNames:
@@ -113,22 +113,22 @@ class SnippetDefinition(SnippetFile):
 
     def parseHeader(self):
         self.initFieldNames()
-        self.headerFields['snippet-version'] = self.version
+        self.headerFields['oll-version'] = self.version
         i = 0
         # read in fields
         while i < len(self.headercontent):
             i = self.readField(i)
         # handle the comma-separated-list fields
-        self.splitFields(['snippet-author', 'snippet-tags', 'snippet-status'])
+        self.splitFields(['oll-author', 'oll-tags', 'oll-status'])
         # parse custom header fields
         for f in self.headerFields:
             if not f in self.stdFieldNames:
                 self.custFieldNames.append(f)
         self.custFieldNames.sort()
         # add snippet to lists for browsing by type
-        self.owner.addToAuthors(self.headerFields['snippet-author'])
-        self.owner.addToCategory(self.headerFields['snippet-category'])
-        self.owner.addToTags(self.headerFields['snippet-tags'])
+        self.owner.addToAuthors(self.headerFields['oll-author'])
+        self.owner.addToCategory(self.headerFields['oll-category'])
+        self.owner.addToTags(self.headerFields['oll-tags'])
 
     def readField(self, i):
         while not re.search('(.*) =', self.headercontent[i]):

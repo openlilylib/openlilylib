@@ -1,17 +1,17 @@
 \version "2.17.10"
 
 \header {
-  snippet-title = "Indicator for original line breaks"
-  snippet-author = "Urs Liska"
-  snippet-description = \markup {
+  oll-title = "Indicator for original line breaks"
+  oll-author = "Urs Liska"
+  oll-description = \markup {
     This snippet draws a dashed vertical line above the staff.
     This is a common notation to indicate line breaks in the
     original source (e.g. when editing sketches and drafts).
   }
-  snippet-category = "editorial-tools"
+  oll-category = "editorial-tools"
   % add comma-separated tags to make searching more effective:
-  snippet-tags = "markup,line breaks"
-  snippet-status = "ready"
+  oll-tags = "markup,line breaks"
+  oll-status = "ready"
   %{ TODO:
      Make appearance of line configurable through variables
      Optionally: Add more styles (dotted, arrows ...)

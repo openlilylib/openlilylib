@@ -17,17 +17,17 @@ class AbstractHtml(object):
         self.pageHtml = ''
         # display titles for used fields
         self.fieldTitles = {
-            'snippet-version': 'Code version', 
-            'snippet-title': 'Snippet title', 
-            'snippet-author': 'Author(s)', 
-            'snippet-short-description': 'Short description', 
-            'snippet-description': 'Description', 
-            'snippet-category': 'Category', 
-            'snippet-tags': 'Tags', 
+            'oll-version': 'Code version', 
+            'oll-title': 'Snippet title', 
+            'oll-author': 'Author(s)', 
+            'oll-short-description': 'Short description', 
+            'oll-description': 'Description', 
+            'oll-category': 'Category', 
+            'oll-tags': 'Tags', 
             'first-lilypond-version': 'First known version', 
             'last-lilypond-version': 'Last known version', 
-            'snippet-status': 'Snippet status', 
-            'snippet-todo': 'TODOs, bugs and feature requests', 
+            'oll-status': 'Snippet status', 
+            'oll-todo': 'TODOs, bugs and feature requests', 
             }
         
         # partial templates for the generation of HTML
@@ -51,26 +51,26 @@ class AbstractHtml(object):
             
             # specific fields with non-standard templates
             'header':
-            '<div class="snippet-header">\n{title}\n</div>\n' +
-                '<div class="snippet-description">{description}\n</div>', 
+            '<div class="oll-header">\n{title}\n</div>\n' +
+                '<div class="oll-description">{description}\n</div>', 
             
             'status':
             '{version}\n<h3>Compatibility:</h3>\n{compatibility}\n' +
                 '<h3 class="subsection">Status information</h3>\n{status}\n',  
                 
-            'snippet-title': "<h1>{}</h1>", 
+            'oll-title': "<h1>{}</h1>", 
                             
-            'snippet-source':
-            '<div class="snippet-source"><span class="field-description">' +
+            'oll-source':
+            '<div class="oll-source"><span class="field-description">' +
                 'Snippet source or other reference:</span><br />' +
                 '<span class="field-content">{}</span></div>', 
                 
-            'snippet-short-description':
-                '<div class="snippet-short-description">\n' +
+            'oll-short-description':
+                '<div class="oll-short-description">\n' +
                 '<span class="field-content">{}</span>\n</div>\n', 
                 
-            'snippet-description':
-            '<div class="snippet-description">{}</div>\n', 
+            'oll-description':
+            '<div class="oll-description">{}</div>\n', 
             
             'lilypond-code': '<pre class="lilypond">{}</pre>'
             }
@@ -123,7 +123,7 @@ class AbstractHtml(object):
     def headContent(self):
         """Content of the <head> section.
         Empty if no stylesheets are defined."""
-        html = '<title>{}</title>\n'.format(self.snippet.definition.headerFields['snippet-title'])
+        html = '<title>{}</title>\n'.format(self.snippet.definition.headerFields['oll-title'])
         html += self.stylesheetEntries()
         return html
     
@@ -244,18 +244,18 @@ class AbstractHtml(object):
         """Return  formatted title/author section."""
         html = self.templates['header'].format(
             title = self.fieldDocs( 
-                ['snippet-title','snippet-short-description', 
-                 'snippet-author']), 
-            description = self.fieldDoc('snippet-description'))
+                ['oll-title','oll-short-description', 
+                 'oll-author']), 
+            description = self.fieldDoc('oll-description'))
         return self.section('header', html)
         
     def metaSection(self):
         """Return section with snippet metadata"""
         return self.section(
             'meta', self.fieldDocs(
-                ['snippet-source', 
-                 'snippet-category', 
-                 'snippet-tags']), 
+                ['oll-source', 
+                 'oll-category', 
+                 'oll-tags']), 
              'Metadata')
              
     def statusSection(self):
@@ -263,11 +263,11 @@ class AbstractHtml(object):
         return self.section(
             'status', 
             self.templates['status'].format(
-                version = self.fieldDoc('snippet-version', True), 
+                version = self.fieldDoc('oll-version', True), 
                 compatibility = self.fieldDocs(['first-lilypond-version', 
                                                 'last-lilypond-version'], True), 
-                status = self.fieldDocs(['snippet-status', 
-                                         'snippet-todo'])), 
+                status = self.fieldDocs(['oll-status', 
+                                         'oll-todo'])), 
             'Status information')
                 
 
@@ -368,7 +368,7 @@ class LibraryNavigation(object):
         only the snippet title is returned, otherwise
         a link is generated."""
         snippet = self.snippets.byName(snippetName)
-        snippetTitle = snippet.definition.headerFields['snippet-title']
+        snippetTitle = snippet.definition.headerFields['oll-title']
         if snippetName != self.currentSnippet:
             return self.templates['link-li'].format(
                 link = snippetName + '.html', 

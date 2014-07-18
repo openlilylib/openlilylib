@@ -4,8 +4,8 @@
 \include "../includes/oll-example.ily"
 
 \header {
-  title = \markup \fromproperty #'header:snippet-title
-  subtitle = \markup \fromproperty #'header:snippet-short-description
+  title = \markup \fromproperty #'header:oll-title
+  subtitle = \markup \fromproperty #'header:oll-short-description
 }
 
 \paper {

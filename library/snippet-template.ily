@@ -3,24 +3,24 @@
 \version "2.16.2" % absolutely necessary!
 
 \header {
-  snippet-title = "Example snippet"
-  snippet-short-description = \markup {
+  oll-title = "Example snippet"
+  oll-short-description = \markup {
     Give a - possibly one-line - subheading for the snippet.
     This will for example be displayed in the table of content.
   }
   % provide a comma-separated list to credit multiple authors
-  snippet-author = "John Doe"
+  oll-author = "John Doe"
   % link to the mailing list archives or a website, if applicable.
   % you can use this field more than once to add multiple references.
-  snippet-source = ""
-  snippet-description = \markup {
+  oll-source = ""
+  oll-description = \markup {
     Briefly describe what the snippet does and how to use it.
     This description will be used for the documentation
     detail pages etc.
   }
   % add one single category.
   % see ??? for the list of valid entries
-  snippet-category = "none"
+  oll-category = "none"
   % add comma-separated tags to make searching more effective.
   % preferrably use tags that already exist (see ???).
   % tag names should use lowercase and connect words using dashes.
@@ -33,7 +33,7 @@
   last-lilypond-version = ""
 
 % optionally add comments on issues and enhancements
-  snippet-todo = ""
+  oll-todo = ""
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%

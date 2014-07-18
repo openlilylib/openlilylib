@@ -1,13 +1,13 @@
 \version "2.16.2" % absolutely necessary!
 
 \header {
-  snippet-title = "Predicates for LilyPond version numbers"
-  snippet-short-description = \markup {
+  oll-title = "Predicates for LilyPond version numbers"
+  oll-short-description = \markup {
     Compare the currently running LilyPond version
     against a given version.
   }
-  snippet-author = "Urs Liska"
-  snippet-description = \markup {
+  oll-author = "Urs Liska"
+  oll-description = \markup {
     This snippet provides a set of predicates (or comparison
     operators) for LilyPond version numbers.
     This is useful for implementing switches in functions
@@ -18,14 +18,14 @@
     as a three element list) as argument and
     compare that to the version number of the running LilyPond.
   }
-  snippet-category = "helpers"
-  snippet-tags = "control-flow,conditionals,compatibility,lilypond-version"
-  snippet-status = "ready"
+  oll-category = "helpers"
+  oll-tags = "control-flow,conditionals,compatibility,lilypond-version"
+  oll-status = "ready"
 
-  snippet-todo = "Typechecking for the ver-list argument"
+  oll-todo = "Typechecking for the ver-list argument"
 
-  snippet-custom = "Test"
-  snippet-custom-2 = \markup {
+  oll-custom = "Test"
+  oll-custom-2 = \markup {
     Test
     and go
   }

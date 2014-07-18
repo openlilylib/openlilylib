@@ -18,15 +18,15 @@
 
 % Ensure that all header fields are initialized with a default value.
 \header {
-  snippet-title = "Undefined"
-  snippet-short-description = "Undefined"
-  snippet-author = "Undefined"
-  snippet-source = "Undefined"
-  snippet-description = "Undefined"
-  snippet-category = "Undefined"
-  snippet-tags = "Undefined"
-  snippet-status = "Undefined"
+  oll-title = "Undefined"
+  oll-short-description = "Undefined"
+  oll-author = "Undefined"
+  oll-source = "Undefined"
+  oll-description = "Undefined"
+  oll-category = "Undefined"
+  oll-tags = "Undefined"
+  oll-status = "Undefined"
   first-lilypond-version = "Undefined"
   last-lilypond-version = "Undefined"
-  snippet-todo = "Undefined"
+  oll-todo = "Undefined"
 }

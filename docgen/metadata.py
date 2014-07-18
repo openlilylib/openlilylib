@@ -25,38 +25,38 @@ class MetadataWidget(QtGui.QFrame):
         
         # dictionary with display information
         self.fieldTitles = {
-            'snippet-status': ("Snippet status:",  
+            'oll-status': ("Snippet status:",  
                         "Is the snippet finished?"), 
-            'snippet-source': ("Snippet source:", 
+            'oll-source': ("Snippet source:", 
                         "Reference to a discussion or other\n" +
                         "sources of inspiration."), 
-            'snippet-tags': ("Tags:", "Tags to sort and browse by"), 
-            'snippet-short-description': ("Short description:", 
+            'oll-tags': ("Tags:", "Tags to sort and browse by"), 
+            'oll-short-description': ("Short description:", 
                         "Subheading telling what the snippet does."), 
-            'snippet-todo': ("TODOs:", "Comments about bugs and feature requests."), 
+            'oll-todo': ("TODOs:", "Comments about bugs and feature requests."), 
             'first-lilypond-version': ("First known LilyPond version:", 
                         "Oldest LilyPond version the snippet is known to run with."), 
             'last-lilypond-version': ("Last known LilyPond version:", 
                         "Newest LilyPond version the snippet is known to run with."),
-            'snippet-description': ("Description:", 
+            'oll-description': ("Description:", 
                         "Detailed description of what the snippet does."), 
-            'snippet-category': ("Category:", "Category to sort and browse snippet by."), 
-            'snippet-author': ("Author(s):", "(List of) Author(s) of the snippet."), 
-            'snippet-title': ("Title:", "Snippet title.")}
+            'oll-category': ("Category:", "Category to sort and browse snippet by."), 
+            'oll-author': ("Author(s):", "(List of) Author(s) of the snippet."), 
+            'oll-title': ("Title:", "Snippet title.")}
         
         # field list for sorted traversal
         self.stdFieldNames = [
-            'snippet-title', 
-            'snippet-short-description', 
-            'snippet-description', 
-            'snippet-author', 
-            'snippet-source', 
-            'snippet-category', 
-            'snippet-tags', 
+            'oll-title', 
+            'oll-short-description', 
+            'oll-description', 
+            'oll-author', 
+            'oll-source', 
+            'oll-category', 
+            'oll-tags', 
             'first-lilypond-version', 
             'last-lilypond-version', 
-            'snippet-status', 
-            'snippet-todo']
+            'oll-status', 
+            'oll-todo']
         
         # list containing names of non-standard fields contained in the file.
         self.custFieldNames = []
