@@ -10,6 +10,7 @@ class AbstractHtml(object):
     """Abstract class for HTML documentation objects"""
     def __init__(self, snippet):
         self.snippet = snippet
+        self.snippets = snippet.owner
         # links to stylesheets
         self.stylesheets = []
         # cache for generated html code
@@ -286,77 +287,14 @@ class HtmlFile(AbstractHtml):
         self.templates['body'] = ('<div id="nav">\n' +
         '<h2>openlilylib</h2><pre>{nav}</pre>\n</div>\n' +
             '<div id="detail">{detail}</div>')
-        self.templates['nav-section'] = ('<div class="container" id="{id}">\n' +
-            '<h2>{label}</h2>\n{content}\n</div>\n')
-        self.templates['nav-group'] = ('<div class="group">{entry}</div>\n' +
-            '<ul>\n{entries}\n</ul>\n')
-        self.templates['link-li'] = '<li><a href="{link}">{title}</a></li>\n'
-        self.templates['link-li-act'] = '<li class="act">{} (current snippet)\n'
         
     def bodyContent(self):
         """The document body has a different template in file based
         detail pages. It has an additional navigation column."""
         return self.templates['body'].format(
-            nav = self.navContent(), 
+            nav = LibraryNavigation(self.snippets, self.snippet.name).content(), 
             detail = super(HtmlFile, self).bodyContent())
 
-    def createNavGroup(self, dict):
-        """Create a navigational group consisting of
-        a title div and an <ul> with link items."""
-        html = ''
-        for entry in dict['names']:
-            html += self.templates['nav-group'].format(
-                    entry = entry, 
-                    entries = self.createNavLinks(dict[entry]))
-        return html
-        
-    def createNavLinkItem(self, snippetName):
-        """Create a single list item representing a snippet.
-        If it points to the currently displayed snippet
-        only the snippet title is returned, otherwise
-        a link is generated."""
-        snippet = self.snippet.owner.byName(snippetName)
-        snippetTitle = snippet.definition.headerFields['snippet-title']
-        if snippetName != self.snippet.name:
-            return self.templates['link-li'].format(
-                link = snippetName + '.html', 
-                title = snippetTitle)
-        else:
-            return self.templates['link-li-act'].format(snippetTitle)
-        
-    def createNavLinks(self, group):
-        """Create link items for all snippets in a group."""
-        html = ''
-        for entry in group:
-            html += self.createNavLinkItem(entry)
-        return html
-        
-    def navContent(self):
-        """Generate the content for the whole navigation column."""
-        html = self.navSection('names', 'By name:')
-        html += self.navSection('categories', 'By category:')
-        html += self.navSection('tags', 'By tag:')
-        html += self.navSection('authors', 'By author:')
-                
-        return  html
-        
-    def navSection(self, group, label):
-        """Create a whole navigation section.
-        The function takes care of 'by name' too,
-        which has one level less. This is done by checking
-        whether 'group' is a list or a dictionary."""
-        dict = getattr(self.snippet.owner, group)
-        if isinstance(dict, list):
-            content = '<ul>\n{}\n</ul>\n'.format(self.createNavLinks(dict))
-        else:
-            content = self.createNavGroup(dict)
-            
-        html = self.templates['nav-section'].format(
-                id = group, 
-                label = label, 
-                content = content)
-        return html
-            
     def save(self):
         """Save the file to disk.
         Determine filename automatically from the snippet name
@@ -367,3 +305,83 @@ class HtmlFile(AbstractHtml):
             f.write(self.page())
         finally:
             f.close()
+
+class LibraryNavigation(object):
+    """Generates a div container containing library navigation.
+    Respects the currently opened snippet."""
+    def __init__(self, snippets, currentSnippetName):
+        self.snippets = snippets
+        self.currentSnippet = currentSnippetName
+        self.templates = {
+            'container': '<div class="container" id="nav">\n{}\n</div>', 
+            'nav-section': ('<div class="container" id="{id}">\n' +
+                '<h2>{label}</h2>\n{content}\n</div>\n'), 
+            'nav-group': ('<div class="group">{entry}</div>\n' +
+                '<ul>\n{entries}\n</ul>\n'), 
+            'link-li': '<li><a href="{link}">{title}</a></li>\n', 
+            'link-li-act': '<li class="act">{} (current snippet)\n', 
+        }
+    
+    def content(self):
+        """Generate the content for the whole navigation column."""
+        html = self.navSection('names', 'By name:')
+        html += self.navSection('categories', 'By category:')
+        html += self.navSection('tags', 'By tag:')
+        html += self.navSection('authors', 'By author:')
+                
+        return  html
+        
+    def html(self):
+        return self.templates['container'].format(self.content)
+    
+    def navSection(self, group, label):
+        """Create a whole navigation section.
+        The function takes care of 'by name' too,
+        which has one level less. This is done by checking
+        whether 'group' is a list or a dictionary."""
+        dict = getattr(self.snippets, group)
+        if isinstance(dict, list):
+            content = '<ul>\n{}\n</ul>\n'.format(self.navLinks(dict))
+        else:
+            content = self.navGroup(dict)
+            
+        html = self.templates['nav-section'].format(
+                id = group, 
+                label = label, 
+                content = content)
+        return html
+            
+
+    def navGroup(self, dict):
+        """Create a navigational group consisting of
+        a title div and an <ul> with link items."""
+        html = ''
+        for entry in dict['names']:
+            html += self.templates['nav-group'].format(
+                    entry = entry, 
+                    entries = self.navLinks(dict[entry]))
+        return html
+        
+    def navLinkItem(self, snippetName):
+        """Create a single list item representing a snippet.
+        If it points to the currently displayed snippet
+        only the snippet title is returned, otherwise
+        a link is generated."""
+        snippet = self.snippets.byName(snippetName)
+        snippetTitle = snippet.definition.headerFields['snippet-title']
+        if snippetName != self.currentSnippet:
+            return self.templates['link-li'].format(
+                link = snippetName + '.html', 
+                title = snippetTitle)
+        else:
+            return self.templates['link-li-act'].format(snippetTitle)
+        
+    def navLinks(self, group):
+        """Create link items for all snippets in a group."""
+        html = ''
+        for entry in group:
+            html += self.navLinkItem(entry)
+        return html
+        
+        
+
