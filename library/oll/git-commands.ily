@@ -97,6 +97,17 @@ gitRevisionNumber = \markup { \gitCommand "log --oneline | wc -l" }
 #(define (gitIsClean)
    (eq? "" (strsystem_internal  "git status --porcelain")))
 
+% gitIsClean determines whether the current repository is clean,
+% but it only returns a boolean value. So if you want to display
+% something based on this information you'll have to create the
+% markup for yourself.
+#(define-markup-command (gitIsCleanMarkup layout props yes-markup no-markup) 
+   (markup? markup?)
+   (if (gitIsClean)
+   (interpret-markup layout props
+       #{ \markup #yes-markup #})
+   (interpret-markup layout props
+       #{ \markup #no-markup #})))
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % "Verbose" commands
