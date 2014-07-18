@@ -180,7 +180,8 @@ class Snippet(QtCore.QObject):
         defFilename = os.path.join(__main__.appInfo.defPath, name) + '.ily'
         self.definition = SnippetDefinition(self, defFilename)
         self.example = None
-        self._html = None
+        self._displayHtml = None
+        self._fileHtml = None
 
     def addExample(self):
         """Read an additional usage-example."""
@@ -202,25 +203,23 @@ class Snippet(QtCore.QObject):
     def hasExample(self):
         """return true if an example is defined."""
         return True if self.example is not None else False
-    
-    def html(self, inline = True):
+
+    def htmlForDisplay(self):
         import html
-        htmlClass = html.HtmlInline if inline else html.HtmlFile
-            
-        if (self._html is None) or not (isinstance(self._html, htmlClass)):
-            self._html = htmlClass(self)
-        return self._html
+        if self._displayHtml is None:
+            self._displayHtml = html.HtmlInline(self)
+        return self._displayHtml
         
-    def htmlDetailPage(self, inline = True):
-        """Return HTML for a documentation detail page."""
+    def htmlForFile(self):
+        import html
+        if self._fileHtml is None:
+            self._fileHtml = html.HtmlFile(self)
+        return self._fileHtml
         
-        return self.html(inline).page()
-    
     def saveHtml(self):
         """Save HTML documentation for the snippet."""
-        # html() only created the object if necessary,
-        # so we make use of caching.
-        self.html(False).save()
+        # htmlForFile() uses caching.
+        self.htmlForFile().save()
         
 
 class Snippets(QtCore.QObject):
