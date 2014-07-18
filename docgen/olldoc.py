@@ -136,7 +136,7 @@ class MainWindow(QtGui.QMainWindow):
         self.modelBrowse.appendRow(byAuthor)
 
     def showSnippet(self, snippet):
-        self.wvDocView.setHtml(snippet.htmlDetailPage())
+        self.wvDocView.setHtml(snippet.htmlForDisplay().page())
         self.snippets.current = snippet.name
         
     def snippetRowClicked(self, index):
