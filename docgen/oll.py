@@ -6,14 +6,15 @@ import re
 from PyQt4 import QtCore
 
 import __main__
+import html
 
-class SnippetFile(QtCore.QObject):
+class OllItemFile(QtCore.QObject):
     """Snippet file (both definition and usage example.
     Has a filename and a filecontent field
     and an abstract parseFile() method."""
     def __init__(self, owner, filename):
-        super(SnippetFile, self).__init__()
-        self.owner = owner
+        super(OllItemFile, self).__init__()
+        self.ollItem = owner
         self.filename = filename
         self.version = None
         self.filecontent = None
@@ -40,7 +41,7 @@ class SnippetFile(QtCore.QObject):
         return result
         
     def parseFile(self):
-        raise Exception("SnippetFile.parseFile() has to be " +
+        raise Exception("OllItemFile.parseFile() has to be " +
                         "implemented in subclasses")
     
     def tagList(self, tagstring):
@@ -48,7 +49,7 @@ class SnippetFile(QtCore.QObject):
         Argument is a comma-separated list."""
         return [ t.strip() for t in tagstring.split(',')]
 
-class SnippetDefinition(SnippetFile):
+class OllItemDefinition(OllItemFile):
     """Definition of a snippet"""
     def __init__(self, owner, filename):
         # Define expected header fields
@@ -56,7 +57,7 @@ class SnippetDefinition(SnippetFile):
         # have not been defined in the snippet
         self.initFieldNames()
 
-        super(SnippetDefinition, self).__init__(owner, filename)
+        super(OllItemDefinition, self).__init__(owner, filename)
     
     def initFieldNames(self):
         self.stdFieldNames = [
@@ -126,9 +127,9 @@ class SnippetDefinition(SnippetFile):
                 self.custFieldNames.append(f)
         self.custFieldNames.sort()
         # add snippet to lists for browsing by type
-        self.owner.addToAuthors(self.headerFields['oll-author'])
-        self.owner.addToCategory(self.headerFields['oll-category'])
-        self.owner.addToTags(self.headerFields['oll-tags'])
+        self.ollItem.addToAuthors(self.headerFields['oll-author'])
+        self.ollItem.addToCategory(self.headerFields['oll-category'])
+        self.ollItem.addToTags(self.headerFields['oll-tags'])
 
     def readField(self, i):
         while not re.search('(.*) =', self.headercontent[i]):
@@ -161,24 +162,24 @@ class SnippetDefinition(SnippetFile):
             self.headerFields[f] = lst
             
         
-class SnippetExample(SnippetFile):
+class OllItemExample(OllItemFile):
     """Usage example for a snippet"""
     def __init__(self, owner, filename):
-        super(SnippetExample, self).__init__(owner, filename)
+        super(OllItemExample, self).__init__(owner, filename)
 
     def parseFile(self):
         #TODO: parse the example file
         pass
 
-class Snippet(QtCore.QObject):
+class OllItem(QtCore.QObject):
     """Object representing a single snippet.
     Contains a definition and an example object."""
     def __init__(self, owner, name):
-        super(Snippet, self).__init__()
-        self.owner = owner
+        super(OllItem, self).__init__()
+        self.oll = owner
         self.name = name
         defFilename = os.path.join(__main__.appInfo.defPath, name) + '.ily'
-        self.definition = SnippetDefinition(self, defFilename)
+        self.definition = OllItemDefinition(self, defFilename)
         self.example = None
         self._displayHtml = None
         self._fileHtml = None
@@ -186,16 +187,16 @@ class Snippet(QtCore.QObject):
     def addExample(self):
         """Read an additional usage-example."""
         xmpFilename = os.path.join(__main__.appInfo.xmpPath, self.name) + '.ly'
-        self.example = SnippetExample(self, xmpFilename)
+        self.example = OllItemExample(self, xmpFilename)
     
     def addToAuthors(self, authors):
-        self.owner.addTo(self.owner.authors, self.name, authors)
+        self.oll.addTo(self.oll.authors, self.name, authors)
         
     def addToCategory(self, catname):
-        self.owner.addTo(self.owner.categories, self.name, catname)
+        self.oll.addTo(self.oll.categories, self.name, catname)
     
     def addToTags(self, tags):
-        self.owner.addTo(self.owner.tags, self.name, tags)
+        self.oll.addTo(self.oll.tags, self.name, tags)
         
     def hasCustomHeaderFields(self):
         return len(self.definition.custFieldNames) > 0
@@ -207,13 +208,13 @@ class Snippet(QtCore.QObject):
     def htmlForDisplay(self):
         import html
         if self._displayHtml is None:
-            self._displayHtml = html.HtmlInline(self)
+            self._displayHtml = html.HtmlDetailInline(self)
         return self._displayHtml
         
     def htmlForFile(self):
         import html
         if self._fileHtml is None:
-            self._fileHtml = html.HtmlFile(self)
+            self._fileHtml = html.HtmlDetailFile(self)
         return self._fileHtml
         
     def saveHtml(self):
@@ -222,35 +223,35 @@ class Snippet(QtCore.QObject):
         self.htmlForFile().save()
         
 
-class Snippets(QtCore.QObject):
+class OLL(QtCore.QObject):
     """Object holding a dictionary of snippets"""
     def __init__(self, owner):
-        super(Snippets, self).__init__()
+        super(OLL, self).__init__()
         self.mainwindow = owner
         self.current = ''
         self.initLists()
-
-    def addTo(self, target, snippet, entry):
+    
+    def addTo(self, target, item, entry):
         if isinstance(entry, list):
             for e in entry:
-                self.addToTarget(target, snippet, e)
+                self.addToTarget(target, item, e)
         else:
-            self.addToTarget(target, snippet, entry)
+            self.addToTarget(target, item, entry)
     
-    def addToTarget(self, target, snippet, entry):
+    def addToTarget(self, target, item, entry):
         if not target.get(entry):
             target[entry] = []
             target['names'].append(entry)
             target['names'].sort()
-        target[entry].append(snippet)
+        target[entry].append(item)
         target[entry].sort()
 
     def byName(self, name):
-        """Return a Snippets object if it is defined."""
-        return self.snippets.get(name, None)
+        """Return a OLL object if it is defined."""
+        return self.items.get(name, None)
         
     def initLists(self):
-        self.snippets = {}
+        self.items = {}
         self.names = []
         self.categories = {'names': []}
         self.tags = {'names': []}
@@ -259,26 +260,26 @@ class Snippets(QtCore.QObject):
     def missingExamples(self):
         result = []
         for d in self.names:
-            if not self.snippets[d].hasExample():
+            if not self.items[d].hasExample():
                 result.append(d)
         return result
     
     def read(self):
-        """Read in all snippets and their examples."""
+        """Read in all items and their examples."""
         self.initLists()
         self.names = self.readDirectory(__main__.appInfo.defPath, ['.ily'])
         xmps = self.readDirectory(__main__.appInfo.xmpPath, ['.ly'])
         
-        # read all snippets
+        # read all items
         for d in self.names:
-            self.snippets[d] = Snippet(self, d)
+            self.items[d] = OllItem(self, d)
         # read all examples, ignore missing ones
         for x in xmps:
-            self.snippets[x].addExample()
+            self.items[x].addExample()
         
         # try to keep the current snippet open
         if (self.current != '') and (self.current in self.names):
-            self.mainwindow.showSnippet(self.snippets[self.current])
+            self.mainwindow.showItem(self.items[self.current])
     
     def readDirectory(self, dir, exts = []):
         """Read in the given dir and return a sorted list with
@@ -292,9 +293,11 @@ class Snippets(QtCore.QObject):
         return result
 
     def saveToHtml(self):
-        """Write out all snippets' documentation pages."""
-        for s in self.snippets:
-            self.snippets[s].saveHtml()
+        """Write out all items' documentation pages."""
+        index = html.OllIndexPage(self)
+        index.save()
+        for s in self.items:
+            self.items[s].saveHtml()
 
     # TEMPORARY
     # Create lists of the different items
@@ -309,10 +312,10 @@ class Snippets(QtCore.QObject):
             result.append('')
         return result
 
-    def displaySnippets(self):        
-        numsnippets = ' (' + str(len(self.snippets) - 
+    def displayItems(self):        
+        numsnippets = ' (' + str(len(self.items) - 
                                  len(self.missingExamples())) + ')' 
-        result = ['Snippets' + numsnippets, '========', '']
+        result = ['OLL' + numsnippets, '========', '']
         for s in self.names:
             if self.byName(s).hasExample():
                 result.append('- ' + s)

@@ -3,7 +3,7 @@
 
 import sys, os
 from PyQt4 import QtCore,  QtGui, QtWebKit
-import snippets
+import oll
 import metadata
 import docview
 
@@ -28,17 +28,22 @@ class MainWindow(QtGui.QMainWindow):
         self.createLayout()
         self.createConnects()
         
-        self.snippets = None
-        self.readSnippets()
+        self._oll = None
+        self.OLL().read()
+        
+        #TEMPORARY
+        self.displayTree()
+        self.OLL().saveToHtml()
+
         
     def createComponents(self):
         self.labelOverview = QtGui.QLabel("Library directory: " + appInfo.defPath)
 
         # Browsing Tree View
-        self.labelBrowse = QtGui.QLabel("Browse Snippets:")
+        self.labelBrowse = QtGui.QLabel("Browse Library:")
         self.tvBrowse = QtGui.QTreeView()
         self.modelBrowse = QtGui.QStandardItemModel()
-        self.modelBrowse.setHorizontalHeaderLabels(['Browse snippets'])
+        self.modelBrowse.setHorizontalHeaderLabels(['Browse library'])
         self.tvBrowse.setModel(self.modelBrowse)
         self.tvBrowse.setUniformRowHeights(True)
         self.tvBrowse.header().hide()
@@ -59,10 +64,10 @@ class MainWindow(QtGui.QMainWindow):
         self.pbExit = QtGui.QPushButton("Exit")
     
     def createConnects(self):
-        self.pbReread.clicked.connect(self.readSnippets)
+        self.pbReread.clicked.connect(self.refreshOLL)
         self.pbExit.clicked.connect(self.close)
         
-        self.tvBrowse.clicked.connect(self.snippetRowClicked)
+        self.tvBrowse.clicked.connect(self.itemRowClicked)
 
     def createLayout(self):
         centralWidget = QtGui.QWidget()
@@ -83,72 +88,69 @@ class MainWindow(QtGui.QMainWindow):
         centralWidget.setLayout(centralLayout)
         self.setCentralWidget(centralWidget)
     
-    def readSnippets(self):
-        # create, read and parse snippets
-        if not self.snippets:
-            self.snippets = snippets.Snippets(self)
-        self.snippets.read()
-        #TEMPORARY
-        self.displayTree()
+    def OLL(self):
+        if not self._oll:
+            self._oll = oll.OLL(self)
+        return self._oll
         
-    def saveSnippetsToHtml(self):
-        if not self.snippets:
-            self.readSnippets()
-        self.snippets.saveToHtml()
-            
     def displayTree(self):
         """Build a tree for browsing the library
         by snippet name, category, tag, author."""
         self.modelBrowse.clear()
 
-        numsnippets = ' (' + str(len(self.snippets.snippets)) + ')'
+        numsnippets = ' (' + str(len(self._oll.items)) + ')'
         byName = QtGui.QStandardItem('By Name' + numsnippets)
-        for sn in self.snippets.names:
+        for sn in self._oll.names:
             byName.appendRow(QtGui.QStandardItem(sn))        # usage example column
 
         self.modelBrowse.appendRow(byName)
 
         byCategory = QtGui.QStandardItem('By Category')
-        for c in self.snippets.categories['names']:
-            numsnippets = ' (' + str(len(self.snippets.categories[c])) + ')'
+        for c in self._oll.categories['names']:
+            numsnippets = ' (' + str(len(self._oll.categories[c])) + ')'
             cat = QtGui.QStandardItem(c + numsnippets)
             byCategory.appendRow(cat)
-            for s in self.snippets.categories[c]:
+            for s in self._oll.categories[c]:
                 cat.appendRow(QtGui.QStandardItem(s))
         self.modelBrowse.appendRow(byCategory)
         
         byTag = QtGui.QStandardItem('By Tag')
-        for t in self.snippets.tags['names']:
-            numsnippets = ' (' + str(len(self.snippets.tags[t])) + ')'
+        for t in self._oll.tags['names']:
+            numsnippets = ' (' + str(len(self._oll.tags[t])) + ')'
             tag = QtGui.QStandardItem(t + numsnippets)
             byTag.appendRow(tag)
-            for s in self.snippets.tags[t]:
+            for s in self._oll.tags[t]:
                 tag.appendRow(QtGui.QStandardItem(s))
         self.modelBrowse.appendRow(byTag)
         
         byAuthor = QtGui.QStandardItem('By Author')
-        for a in self.snippets.authors['names']:
-            numsnippets = ' (' + str(len(self.snippets.authors[a])) + ')'
+        for a in self._oll.authors['names']:
+            numsnippets = ' (' + str(len(self._oll.authors[a])) + ')'
             author = QtGui.QStandardItem(a + numsnippets)
             byAuthor.appendRow(author)
-            for s in self.snippets.authors[a]:
+            for s in self._oll.authors[a]:
                 author.appendRow(QtGui.QStandardItem(s))
         self.modelBrowse.appendRow(byAuthor)
+    
+    def refreshOLL(self):
+        self.OLL().read()
+        self.displayTree()
+        self.OLL().saveToHtml()
 
-    def showSnippet(self, snippet):
-        self.wvDocView.setHtml(snippet.htmlForDisplay().page())
-        self.snippets.current = snippet.name
+    def showItem(self, item):
+        self.wvDocView.setHtml(item.htmlForDisplay().page())
+        self._oll.current = item.name
         
-    def snippetRowClicked(self, index):
+    def itemRowClicked(self, index):
         """When clicking on a row with a snippet name
         'open' that snippet and show its data."""
         
         # determine the content of the clicked row
         # and lookup a snippet if it exists.
         name = unicode(self.modelBrowse.itemFromIndex(index).text())
-        snippet = self.snippets.byName(name)
-        if snippet is not None:
-            self.showSnippet(snippet)
+        item = self._oll.byName(name)
+        if item is not None:
+            self.showItem(item)
 
 def main(argv):
     global appInfo, mainWindow
