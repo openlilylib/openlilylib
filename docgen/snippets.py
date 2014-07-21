@@ -229,7 +229,7 @@ class OLL(QtCore.QObject):
         self.mainwindow = owner
         self.current = ''
         self.initLists()
-
+    
     def addTo(self, target, snippet, entry):
         if isinstance(entry, list):
             for e in entry:

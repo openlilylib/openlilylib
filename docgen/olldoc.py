@@ -29,13 +29,13 @@ class MainWindow(QtGui.QMainWindow):
         self.createConnects()
         
         self._oll = None
-        self.readOLL()
+        self.OLL().read()
         
-        # TEMPORARY
-#        self.temporaryFileDump()
+        #TEMPORARY
+        self.displayTree()
+        self.OLL().saveToHtml()
+
         
-        
-    
     def createComponents(self):
         self.labelOverview = QtGui.QLabel("Library directory: " + appInfo.defPath)
 
@@ -64,10 +64,10 @@ class MainWindow(QtGui.QMainWindow):
         self.pbExit = QtGui.QPushButton("Exit")
     
     def createConnects(self):
-        self.pbReread.clicked.connect(self.readOLL)
+        self.pbReread.clicked.connect(self.refreshOLL)
         self.pbExit.clicked.connect(self.close)
         
-        self.tvBrowse.clicked.connect(self.snippetRowClicked)
+        self.tvBrowse.clicked.connect(self.itemRowClicked)
 
     def createLayout(self):
         centralWidget = QtGui.QWidget()
@@ -92,13 +92,6 @@ class MainWindow(QtGui.QMainWindow):
         if not self._oll:
             self._oll = snippets.OLL(self)
         return self._oll
-        
-    def readOLL(self):
-        # create, read and parse library items
-        self.OLL().read()
-        #TEMPORARY
-        self.displayTree()
-        self.OLL().saveToHtml()
         
     def displayTree(self):
         """Build a tree for browsing the library
@@ -138,12 +131,17 @@ class MainWindow(QtGui.QMainWindow):
             for s in self._oll.authors[a]:
                 author.appendRow(QtGui.QStandardItem(s))
         self.modelBrowse.appendRow(byAuthor)
+    
+    def refreshOLL(self):
+        self.OLL().read()
+        self.displayTree()
+        self.OLL().saveToHtml()
 
-    def showSnippet(self, snippet):
+    def showItem(self, snippet):
         self.wvDocView.setHtml(snippet.htmlForDisplay().page())
         self._oll.current = snippet.name
         
-    def snippetRowClicked(self, index):
+    def itemRowClicked(self, index):
         """When clicking on a row with a snippet name
         'open' that snippet and show its data."""
         
@@ -152,7 +150,7 @@ class MainWindow(QtGui.QMainWindow):
         name = unicode(self.modelBrowse.itemFromIndex(index).text())
         snippet = self._oll.byName(name)
         if snippet is not None:
-            self.showSnippet(snippet)
+            self.showItem(snippet)
 
 def main(argv):
     global appInfo, mainWindow
