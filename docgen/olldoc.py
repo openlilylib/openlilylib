@@ -31,6 +31,11 @@ class MainWindow(QtGui.QMainWindow):
         self.snippets = None
         self.readSnippets()
         
+        # TEMPORARY
+#        self.temporaryFileDump()
+        
+        
+    
     def createComponents(self):
         self.labelOverview = QtGui.QLabel("Library directory: " + appInfo.defPath)
 
