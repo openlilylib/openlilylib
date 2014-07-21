@@ -465,15 +465,24 @@ class LibraryNavigation(object):
         if itemName != self.currentItem:
             return self.templates['link-li'].format(
                 link = itemName + '.html', 
-                title = itemTitle)
+                title = itemTitle), itemTitle
         else:
-            return self.templates['link-li-act'].format(itemTitle)
+            return self.templates['link-li-act'].format(itemTitle), itemTitle
         
     def navLinks(self, group):
-        """Create link items for all snippets in a group."""
+        """Create link items for all snippets in a group.
+        The list is sorted by the displayed text."""
+        #TODO: Somehow this looks not really Pythonic to me ...
         html = ''
+        entries = {}
+        titles = []
         for entry in group:
-            html += self.navLinkItem(entry)
+            link, title = self.navLinkItem(entry)
+            entries[title] = link
+            titles.append(title)
+        titles.sort()
+        for t in titles:
+            html += entries[t]
         return html
         
         
