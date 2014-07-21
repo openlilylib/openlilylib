@@ -36,10 +36,12 @@ class AbstractHtml(object):
             '<link rel="stylesheet" href="{}" />', 
             
             'body':
-            '<body>\n{bodycontent}\n</body>\n', 
+            '<body>\n{headercontent}\n{bodycontent}\n</body>\n', 
             
             'body-content':
             '<div id="content">\n{}</n>\n', 
+            
+            'header-content': '', 
         }
             
     
@@ -50,7 +52,9 @@ class AbstractHtml(object):
         """Returns the complete body of an HTML page.
         Results are cached, so data is only generated once."""
         if self._bodyHtml == '':
-            self._bodyHtml = self.templates['body'].format(bodycontent = self.bodyContent())
+            self._bodyHtml = self.templates['body'].format(
+                headercontent = self.headerContent(), 
+                bodycontent = self.bodyContent())
         return self._bodyHtml
         
     def bodyContent(self):
@@ -75,6 +79,11 @@ class AbstractHtml(object):
         html += self.scripts()
         return html
     
+    def headerContent(self):
+        # Temporary implementation
+        return self.templates['header-content'].format(
+            '<a href="index.html">Back to index page</a>')
+        
     def page(self):
         """Return a whole HTML page."""
         return self.templates['page'].format(
@@ -349,6 +358,7 @@ class HtmlDetailFile(OllDetailPage):
         self.templates['body-content'] = ('<div id="nav">\n' +
         '<h2>openlilylib</h2>\n{nav}\n</div>\n' +
             '<div id="detail">{detail}</div>')
+        self.templates['header-content'] = '<div id="header">\n{}</div>\n'
         
     def bodyContent(self):
         """The document body has a different template in file based
