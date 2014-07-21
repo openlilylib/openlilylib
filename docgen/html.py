@@ -8,7 +8,7 @@ from __main__ import appInfo
 
 class AbstractHtml(object):
     """Abstract class for HTML documentation objects"""
-    def __init__(self, snippet):
+    def __init__(self, ollItem):
         # links to stylesheets
         self._stylesheets = []
         # links to script files
@@ -101,11 +101,11 @@ class AbstractHtml(object):
     
 class AbstractOllHtml(AbstractHtml):
     """Base class for HTML objects with specific OLL relations."""
-    def __init__(self, snippet):
-        super(AbstractOllHtml, self).__init__(snippet)
+    def __init__(self, ollItem):
+        super(AbstractOllHtml, self).__init__(ollItem)
         # hold references to the library objects
-        self.snippet = snippet
-        self.snippets = snippet.owner
+        self.ollItem = ollItem
+        self.oll = ollItem.oll
         # display string for undefined field
         self._undefinedString = 'Undefined'
         # display titles for used fields
@@ -163,7 +163,7 @@ class AbstractOllHtml(AbstractHtml):
         Handles both generating of default values or hiding the field,
         handles single elements or lists."""
         
-        content = self.snippet.definition.headerFields[fieldName]
+        content = self.ollItem.definition.headerFields[fieldName]
 
         # if the field has more than one values
         # defer to submethod
@@ -243,8 +243,8 @@ class AbstractOllHtml(AbstractHtml):
             n = name, t = title, c = content)
     
 class OllDetailPage(AbstractOllHtml):
-    def __init__(self, snippet):
-        super(OllDetailPage, self).__init__(snippet)
+    def __init__(self, ollItem):
+        super(OllDetailPage, self).__init__(ollItem)
         self.templates.update( {
             'section':
             '<div class="container" id="{n}">\n{t}{c}\n</div>', 
@@ -279,10 +279,10 @@ class OllDetailPage(AbstractOllHtml):
     def customFieldsSection(self):
         """Document custom fields if they are present
         in a snippet's header."""
-        if not self.snippet.hasCustomHeaderFields():
+        if not self.ollItem.hasCustomHeaderFields():
             return ''
         html = ''
-        for f in self.snippet.definition.custFieldNames:
+        for f in self.ollItem.definition.custFieldNames:
             html += self.fieldDoc(f)
         return self.section('custom', 
                             html, 
@@ -291,14 +291,14 @@ class OllDetailPage(AbstractOllHtml):
     def definitionBodySection(self):
         """Return the snippet definition's LilyPond code."""
         return self.section('definition-body', 
-            self.lilypondToHtml(''.join(self.snippet.definition.bodycontent)), 
+            self.lilypondToHtml(''.join(self.ollItem.definition.bodycontent)), 
             'Snippet definition')
         
     def exampleBodySection(self):
         """Return a usage example (if present) as LilyPond code."""
-        if self.snippet.hasExample():
+        if self.ollItem.hasExample():
             return self.section('example-body', 
-            self.lilypondToHtml(''.join(self.snippet.example.filecontent)), 
+            self.lilypondToHtml(''.join(self.ollItem.example.filecontent)), 
             'Usage example')
         else:
             return ''
@@ -337,14 +337,14 @@ class OllDetailPage(AbstractOllHtml):
 class HtmlDetailInline(OllDetailPage):
     """Class for snippets to be displayed in the
     inline documentation viewer."""
-    def __init__(self, snippet):
-        super(HtmlDetailInline, self).__init__(snippet)
+    def __init__(self, ollItem):
+        super(HtmlDetailInline, self).__init__(ollItem)
 
 
 class HtmlDetailFile(OllDetailPage):
     """OLL that will be printed to files."""
-    def __init__(self, snippet):
-        super(HtmlDetailFile, self).__init__(snippet)
+    def __init__(self, ollItem):
+        super(HtmlDetailFile, self).__init__(ollItem)
         self._stylesheets.append('css/detailPage-file.css')
         self.templates['body-content'] = ('<div id="nav">\n' +
         '<h2>openlilylib</h2>\n{nav}\n</div>\n' +
@@ -354,14 +354,14 @@ class HtmlDetailFile(OllDetailPage):
         """The document body has a different template in file based
         detail pages. It has an additional navigation column."""            
         return self.templates['body-content'].format(
-            nav = LibraryNavigation(self.snippets, self.snippet.name).content(), 
+            nav = LibraryNavigation(self.oll, self.ollItem.name).content(), 
             detail = super(HtmlDetailFile, self).bodyDetail())
 
     def save(self):
         """Save the file to disk.
         Determine filename automatically from the snippet name
         and use cached content if possible."""
-        filename = os.path.join(appInfo.docPath, self.snippet.name + '.html')
+        filename = os.path.join(appInfo.docPath, self.ollItem.name + '.html')
         f = open(filename, 'w')
         try:
             f.write(self.page())
@@ -371,8 +371,8 @@ class HtmlDetailFile(OllDetailPage):
 class LibraryNavigation(object):
     """Generates a div container containing library navigation.
     Respects the currently opened snippet."""
-    def __init__(self, snippets, currentSnippetName):
-        self.snippets = snippets
+    def __init__(self, oll, currentSnippetName):
+        self.oll = oll
         self.currentSnippet = currentSnippetName
         self.templates = {
             'container': '<div class="container" id="nav">\n{}\n</div>', 
@@ -401,7 +401,7 @@ class LibraryNavigation(object):
         The function takes care of 'by name' too,
         which has one level less. This is done by checking
         whether 'group' is a list or a dictionary."""
-        dict = getattr(self.snippets, group)
+        dict = getattr(self.oll, group)
         if isinstance(dict, list):
             content = '<ul>\n{}\n</ul>\n'.format(self.navLinks(dict))
         else:
@@ -429,8 +429,8 @@ class LibraryNavigation(object):
         If it points to the currently displayed snippet
         only the snippet title is returned, otherwise
         a link is generated."""
-        snippet = self.snippets.byName(snippetName)
-        snippetTitle = snippet.definition.headerFields['oll-title']
+        ollItem = self.oll.byName(snippetName)
+        snippetTitle = ollItem.definition.headerFields['oll-title']
         if snippetName != self.currentSnippet:
             return self.templates['link-li'].format(
                 link = snippetName + '.html', 

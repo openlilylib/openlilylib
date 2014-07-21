@@ -13,7 +13,7 @@ class OllItemFile(QtCore.QObject):
     and an abstract parseFile() method."""
     def __init__(self, owner, filename):
         super(OllItemFile, self).__init__()
-        self.owner = owner
+        self.ollItem = owner
         self.filename = filename
         self.version = None
         self.filecontent = None
@@ -126,9 +126,9 @@ class OllItemDefinition(OllItemFile):
                 self.custFieldNames.append(f)
         self.custFieldNames.sort()
         # add snippet to lists for browsing by type
-        self.owner.addToAuthors(self.headerFields['oll-author'])
-        self.owner.addToCategory(self.headerFields['oll-category'])
-        self.owner.addToTags(self.headerFields['oll-tags'])
+        self.ollItem.addToAuthors(self.headerFields['oll-author'])
+        self.ollItem.addToCategory(self.headerFields['oll-category'])
+        self.ollItem.addToTags(self.headerFields['oll-tags'])
 
     def readField(self, i):
         while not re.search('(.*) =', self.headercontent[i]):
@@ -175,7 +175,7 @@ class OllItem(QtCore.QObject):
     Contains a definition and an example object."""
     def __init__(self, owner, name):
         super(OllItem, self).__init__()
-        self.owner = owner
+        self.oll = owner
         self.name = name
         defFilename = os.path.join(__main__.appInfo.defPath, name) + '.ily'
         self.definition = OllItemDefinition(self, defFilename)
@@ -189,13 +189,13 @@ class OllItem(QtCore.QObject):
         self.example = OllItemExample(self, xmpFilename)
     
     def addToAuthors(self, authors):
-        self.owner.addTo(self.owner.authors, self.name, authors)
+        self.oll.addTo(self.oll.authors, self.name, authors)
         
     def addToCategory(self, catname):
-        self.owner.addTo(self.owner.categories, self.name, catname)
+        self.oll.addTo(self.oll.categories, self.name, catname)
     
     def addToTags(self, tags):
-        self.owner.addTo(self.owner.tags, self.name, tags)
+        self.oll.addTo(self.oll.tags, self.name, tags)
         
     def hasCustomHeaderFields(self):
         return len(self.definition.custFieldNames) > 0
