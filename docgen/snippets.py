@@ -48,7 +48,7 @@ class OllItemFile(QtCore.QObject):
         Argument is a comma-separated list."""
         return [ t.strip() for t in tagstring.split(',')]
 
-class SnippetDefinition(OllItemFile):
+class OllItemDefinition(OllItemFile):
     """Definition of a snippet"""
     def __init__(self, owner, filename):
         # Define expected header fields
@@ -56,7 +56,7 @@ class SnippetDefinition(OllItemFile):
         # have not been defined in the snippet
         self.initFieldNames()
 
-        super(SnippetDefinition, self).__init__(owner, filename)
+        super(OllItemDefinition, self).__init__(owner, filename)
     
     def initFieldNames(self):
         self.stdFieldNames = [
@@ -161,10 +161,10 @@ class SnippetDefinition(OllItemFile):
             self.headerFields[f] = lst
             
         
-class SnippetExample(OllItemFile):
+class OllItemExample(OllItemFile):
     """Usage example for a snippet"""
     def __init__(self, owner, filename):
-        super(SnippetExample, self).__init__(owner, filename)
+        super(OllItemExample, self).__init__(owner, filename)
 
     def parseFile(self):
         #TODO: parse the example file
@@ -178,7 +178,7 @@ class OllItem(QtCore.QObject):
         self.owner = owner
         self.name = name
         defFilename = os.path.join(__main__.appInfo.defPath, name) + '.ily'
-        self.definition = SnippetDefinition(self, defFilename)
+        self.definition = OllItemDefinition(self, defFilename)
         self.example = None
         self._displayHtml = None
         self._fileHtml = None
@@ -186,7 +186,7 @@ class OllItem(QtCore.QObject):
     def addExample(self):
         """Read an additional usage-example."""
         xmpFilename = os.path.join(__main__.appInfo.xmpPath, self.name) + '.ly'
-        self.example = SnippetExample(self, xmpFilename)
+        self.example = OllItemExample(self, xmpFilename)
     
     def addToAuthors(self, authors):
         self.owner.addTo(self.owner.authors, self.name, authors)
