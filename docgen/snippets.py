@@ -7,12 +7,12 @@ from PyQt4 import QtCore
 
 import __main__
 
-class SnippetFile(QtCore.QObject):
+class OllItemFile(QtCore.QObject):
     """Snippet file (both definition and usage example.
     Has a filename and a filecontent field
     and an abstract parseFile() method."""
     def __init__(self, owner, filename):
-        super(SnippetFile, self).__init__()
+        super(OllItemFile, self).__init__()
         self.owner = owner
         self.filename = filename
         self.version = None
@@ -40,7 +40,7 @@ class SnippetFile(QtCore.QObject):
         return result
         
     def parseFile(self):
-        raise Exception("SnippetFile.parseFile() has to be " +
+        raise Exception("OllItemFile.parseFile() has to be " +
                         "implemented in subclasses")
     
     def tagList(self, tagstring):
@@ -48,7 +48,7 @@ class SnippetFile(QtCore.QObject):
         Argument is a comma-separated list."""
         return [ t.strip() for t in tagstring.split(',')]
 
-class SnippetDefinition(SnippetFile):
+class SnippetDefinition(OllItemFile):
     """Definition of a snippet"""
     def __init__(self, owner, filename):
         # Define expected header fields
@@ -161,7 +161,7 @@ class SnippetDefinition(SnippetFile):
             self.headerFields[f] = lst
             
         
-class SnippetExample(SnippetFile):
+class SnippetExample(OllItemFile):
     """Usage example for a snippet"""
     def __init__(self, owner, filename):
         super(SnippetExample, self).__init__(owner, filename)
@@ -170,11 +170,11 @@ class SnippetExample(SnippetFile):
         #TODO: parse the example file
         pass
 
-class Snippet(QtCore.QObject):
+class OllItem(QtCore.QObject):
     """Object representing a single snippet.
     Contains a definition and an example object."""
     def __init__(self, owner, name):
-        super(Snippet, self).__init__()
+        super(OllItem, self).__init__()
         self.owner = owner
         self.name = name
         defFilename = os.path.join(__main__.appInfo.defPath, name) + '.ily'
@@ -271,7 +271,7 @@ class OLL(QtCore.QObject):
         
         # read all snippets
         for d in self.names:
-            self.snippets[d] = Snippet(self, d)
+            self.snippets[d] = OllItem(self, d)
         # read all examples, ignore missing ones
         for x in xmps:
             self.snippets[x].addExample()
