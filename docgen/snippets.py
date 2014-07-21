@@ -222,10 +222,10 @@ class Snippet(QtCore.QObject):
         self.htmlForFile().save()
         
 
-class Snippets(QtCore.QObject):
+class OLL(QtCore.QObject):
     """Object holding a dictionary of snippets"""
     def __init__(self, owner):
-        super(Snippets, self).__init__()
+        super(OLL, self).__init__()
         self.mainwindow = owner
         self.current = ''
         self.initLists()
@@ -246,7 +246,7 @@ class Snippets(QtCore.QObject):
         target[entry].sort()
 
     def byName(self, name):
-        """Return a Snippets object if it is defined."""
+        """Return a OLL object if it is defined."""
         return self.snippets.get(name, None)
         
     def initLists(self):
@@ -309,10 +309,10 @@ class Snippets(QtCore.QObject):
             result.append('')
         return result
 
-    def displaySnippets(self):        
+    def displayOLL(self):        
         numsnippets = ' (' + str(len(self.snippets) - 
                                  len(self.missingExamples())) + ')' 
-        result = ['Snippets' + numsnippets, '========', '']
+        result = ['OLL' + numsnippets, '========', '']
         for s in self.names:
             if self.byName(s).hasExample():
                 result.append('- ' + s)

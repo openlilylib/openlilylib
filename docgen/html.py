@@ -346,7 +346,7 @@ class HtmlDetailInline(OllDetailPage):
 
 
 class HtmlDetailFile(OllDetailPage):
-    """Snippets that will be printed to files."""
+    """OLL that will be printed to files."""
     def __init__(self, snippet):
         super(HtmlDetailFile, self).__init__(snippet)
         self._stylesheets.append('css/detailPage-file.css')

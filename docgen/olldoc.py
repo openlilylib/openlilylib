@@ -29,7 +29,7 @@ class MainWindow(QtGui.QMainWindow):
         self.createConnects()
         
         self.snippets = None
-        self.readSnippets()
+        self.readOLL()
         
         # TEMPORARY
 #        self.temporaryFileDump()
@@ -64,7 +64,7 @@ class MainWindow(QtGui.QMainWindow):
         self.pbExit = QtGui.QPushButton("Exit")
     
     def createConnects(self):
-        self.pbReread.clicked.connect(self.readSnippets)
+        self.pbReread.clicked.connect(self.readOLL)
         self.pbExit.clicked.connect(self.close)
         
         self.tvBrowse.clicked.connect(self.snippetRowClicked)
@@ -88,17 +88,18 @@ class MainWindow(QtGui.QMainWindow):
         centralWidget.setLayout(centralLayout)
         self.setCentralWidget(centralWidget)
     
-    def readSnippets(self):
+    def readOLL(self):
         # create, read and parse snippets
         if not self.snippets:
-            self.snippets = snippets.Snippets(self)
+            self.snippets = snippets.OLL(self)
         self.snippets.read()
         #TEMPORARY
         self.displayTree()
+        self.saveOLLToHtml()
         
-    def saveSnippetsToHtml(self):
+    def saveOLLToHtml(self):
         if not self.snippets:
-            self.readSnippets()
+            self.readOLL()
         self.snippets.saveToHtml()
             
     def displayTree(self):
