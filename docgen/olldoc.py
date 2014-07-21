@@ -98,7 +98,7 @@ class MainWindow(QtGui.QMainWindow):
         by snippet name, category, tag, author."""
         self.modelBrowse.clear()
 
-        numsnippets = ' (' + str(len(self._oll.snippets)) + ')'
+        numsnippets = ' (' + str(len(self._oll.items)) + ')'
         byName = QtGui.QStandardItem('By Name' + numsnippets)
         for sn in self._oll.names:
             byName.appendRow(QtGui.QStandardItem(sn))        # usage example column

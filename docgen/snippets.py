@@ -230,27 +230,27 @@ class OLL(QtCore.QObject):
         self.current = ''
         self.initLists()
     
-    def addTo(self, target, snippet, entry):
+    def addTo(self, target, item, entry):
         if isinstance(entry, list):
             for e in entry:
-                self.addToTarget(target, snippet, e)
+                self.addToTarget(target, item, e)
         else:
-            self.addToTarget(target, snippet, entry)
+            self.addToTarget(target, item, entry)
     
-    def addToTarget(self, target, snippet, entry):
+    def addToTarget(self, target, item, entry):
         if not target.get(entry):
             target[entry] = []
             target['names'].append(entry)
             target['names'].sort()
-        target[entry].append(snippet)
+        target[entry].append(item)
         target[entry].sort()
 
     def byName(self, name):
         """Return a OLL object if it is defined."""
-        return self.snippets.get(name, None)
+        return self.items.get(name, None)
         
     def initLists(self):
-        self.snippets = {}
+        self.items = {}
         self.names = []
         self.categories = {'names': []}
         self.tags = {'names': []}
@@ -259,26 +259,26 @@ class OLL(QtCore.QObject):
     def missingExamples(self):
         result = []
         for d in self.names:
-            if not self.snippets[d].hasExample():
+            if not self.items[d].hasExample():
                 result.append(d)
         return result
     
     def read(self):
-        """Read in all snippets and their examples."""
+        """Read in all items and their examples."""
         self.initLists()
         self.names = self.readDirectory(__main__.appInfo.defPath, ['.ily'])
         xmps = self.readDirectory(__main__.appInfo.xmpPath, ['.ly'])
         
-        # read all snippets
+        # read all items
         for d in self.names:
-            self.snippets[d] = OllItem(self, d)
+            self.items[d] = OllItem(self, d)
         # read all examples, ignore missing ones
         for x in xmps:
-            self.snippets[x].addExample()
+            self.items[x].addExample()
         
         # try to keep the current snippet open
         if (self.current != '') and (self.current in self.names):
-            self.mainwindow.showSnippet(self.snippets[self.current])
+            self.mainwindow.showItem(self.items[self.current])
     
     def readDirectory(self, dir, exts = []):
         """Read in the given dir and return a sorted list with
@@ -292,9 +292,9 @@ class OLL(QtCore.QObject):
         return result
 
     def saveToHtml(self):
-        """Write out all snippets' documentation pages."""
-        for s in self.snippets:
-            self.snippets[s].saveHtml()
+        """Write out all items' documentation pages."""
+        for s in self.items:
+            self.items[s].saveHtml()
 
     # TEMPORARY
     # Create lists of the different items
@@ -309,8 +309,8 @@ class OLL(QtCore.QObject):
             result.append('')
         return result
 
-    def displayOLL(self):        
-        numsnippets = ' (' + str(len(self.snippets) - 
+    def displayItems(self):        
+        numsnippets = ' (' + str(len(self.items) - 
                                  len(self.missingExamples())) + ')' 
         result = ['OLL' + numsnippets, '========', '']
         for s in self.names:
