@@ -9,12 +9,66 @@ from __main__ import appInfo
 class AbstractHtml(object):
     """Abstract class for HTML documentation objects"""
     def __init__(self, snippet):
-        self.snippet = snippet
-        self.snippets = snippet.owner
         # links to stylesheets
         self.stylesheets = []
         # cache for generated html code
         self.pageHtml = ''
+        
+        # partial templates for the generation of HTML
+        self.templates = {
+            'page': 
+            '<html>\n{head}\n{body}\n</html>', 
+            
+            'head':
+            '<head>\n{headcontent}\n</head>', 
+            
+            'stylesheet':
+            '<link rel="stylesheet" href="{}" />', 
+            
+            'body':
+            '<body>\n{bodycontent}\n</body>', 
+        }
+            
+    
+    # ##########################################
+    # Methods to compose parts of or whole pages
+    
+    def bodyContent(self):
+        """Return HTML for the page body.
+        Subclasses can override individual sub-methods 
+        of the HTML generation or this whole method."""
+        html = self.headerSection()
+        html += self.metaSection()
+        html += self.statusSection()
+        html += self.customFieldsSection()
+        html += self.definitionBodySection()
+        html += self.exampleBodySection()
+        
+        return html
+
+    def page(self):
+        """Return a whole HTML page.
+        Results are cached, so the page is only generated once."""
+        if self.pageHtml == '':
+            self.pageHtml = self.templates['page'].format(
+                head = self.templates['head'].format(headcontent = self.headContent()), 
+                body = self.templates['body'].format(bodycontent = self.bodyContent()))
+        return self.pageHtml
+    
+    def stylesheetEntries(self):
+        """If the 'stylesheets' list has entries
+        they will be inserted in the <head> section
+        of the generated page."""
+        html = ''
+        for s in self.stylesheets:
+            html += self.templates['stylesheet'].format(s)
+        return html
+    
+class AbstractOllHtml(AbstractHtml):
+    def __init__(self, snippet):
+        super(AbstractOllHtml, self).__init__(snippet)
+        self.snippet = snippet
+        self.snippets = snippet.owner
         # display titles for used fields
         self.fieldTitles = {
             'oll-version': 'Code version', 
@@ -29,15 +83,7 @@ class AbstractHtml(object):
             'oll-status': 'Snippet status', 
             'oll-todo': 'TODOs, bugs and feature requests', 
             }
-        
-        # partial templates for the generation of HTML
-        self.templates = {
-            'page': 
-            '<html>\n<head>\n{head}\n</head>\n<body>\n{body}\n</body>\n</html>', 
-            
-            'stylesheet':
-            '<link rel="stylesheet" href="{}" />', 
-            
+        self.templates.update( {
             'section':
             '<div class="container" id="{n}">\n{t}{c}\n</div>', 
             
@@ -74,10 +120,11 @@ class AbstractHtml(object):
             
             'lilypond-code': '<pre class="lilypond">{}</pre>'
             }
+            )
 
         self.listTemplate = ('<div class="{n}"><span class="field-description">' +
                 '{t}: </span><ul>{c}</ul></div>')
-    
+
     # ############################################
     # Generic functions to generate HTML fragments
     
@@ -175,40 +222,6 @@ class AbstractHtml(object):
             n = name, t = title, c = content)
     
     # ##########################################
-    # Methods to compose parts of or whole pages
-    
-    def bodyContent(self):
-        """Return HTML for the page body.
-        Subclasses can override individual sub-methods 
-        of the HTML generation or this whole method."""
-        html = self.headerSection()
-        html += self.metaSection()
-        html += self.statusSection()
-        html += self.customFieldsSection()
-        html += self.definitionBodySection()
-        html += self.exampleBodySection()
-        
-        return html
-
-    def page(self):
-        """Return a whole HTML page.
-        Results are cached, so the page is only generated once."""
-        if self.pageHtml == '':
-            self.pageHtml = self.templates['page'].format(
-                head = self.headContent(), 
-                body = self.bodyContent())
-        return self.pageHtml
-    
-    def stylesheetEntries(self):
-        """If the 'stylesheets' list has entries
-        they will be inserted in the <head> section
-        of the generated page."""
-        html = ''
-        for s in self.stylesheets:
-            html += self.templates['stylesheet'].format(s)
-        return html
-    
-    # ##########################################
     # Methods to compose the individual sections
     # Subclasses may override these methods to
     # generate alternative pages.
@@ -269,17 +282,19 @@ class AbstractHtml(object):
                 status = self.fieldDocs(['oll-status', 
                                          'oll-todo'])), 
             'Status information')
-                
 
-
-class HtmlInline(AbstractHtml):
+class OllDetailPage(AbstractOllHtml):
+    def __init__(self, snippet):
+        super(OllDetailPage, self).__init__(snippet)
+    
+class HtmlInline(OllDetailPage):
     """Class for snippets to be displayed in the
     inline documentation viewer."""
     def __init__(self, snippet):
         super(HtmlInline, self).__init__(snippet)
 
 
-class HtmlFile(AbstractHtml):
+class HtmlFile(OllDetailPage):
     """Snippets that will be printed to files."""
     def __init__(self, snippet):
         super(HtmlFile, self).__init__(snippet)
