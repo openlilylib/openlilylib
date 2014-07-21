@@ -6,6 +6,7 @@ import re
 from PyQt4 import QtCore
 
 import __main__
+import html
 
 class OllItemFile(QtCore.QObject):
     """Snippet file (both definition and usage example.
@@ -293,6 +294,8 @@ class OLL(QtCore.QObject):
 
     def saveToHtml(self):
         """Write out all items' documentation pages."""
+        index = html.OllIndexPage(self)
+        index.save()
         for s in self.items:
             self.items[s].saveHtml()
 

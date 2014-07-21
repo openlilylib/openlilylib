@@ -4,7 +4,7 @@
 from PyQt4 import QtCore, QtGui, QtWebKit
 import os
 import oll
-from __main__ import appInfo
+import __main__
 
 class AbstractHtml(object):
     """Abstract class for HTML documentation objects"""
@@ -90,6 +90,18 @@ class AbstractHtml(object):
             head = self.head(), 
             body = self.body())
         
+    def save(self):
+        """Save the file to disk.
+        Filename has to be determined in the __init__
+        method of subclasses."""
+        
+        if self.filename != '':
+            f = open(self.filename, 'w')
+            try:
+                f.write(self.page())
+            finally:
+                f.close()
+
     def scripts(self):
         """If the 'scripts' list has entries
         they will be inserted in the <head> section
@@ -114,7 +126,9 @@ class AbstractOllHtml(AbstractHtml):
         super(AbstractOllHtml, self).__init__(ollItem)
         # hold references to the library objects
         self.ollItem = ollItem
-        self.oll = ollItem.oll
+        self.oll = None
+        if ollItem:
+            self.oll = ollItem.oll
         # display string for undefined field
         self._undefinedString = 'Undefined'
         # display titles for used fields
@@ -250,6 +264,23 @@ class AbstractOllHtml(AbstractHtml):
             title = self.templates['section-heading'].format(title)
         return self.templates['section'].format(
             n = name, t = title, c = content)
+
+class OllIndexPage(AbstractOllHtml):
+    def __init__(self, oll):
+        super(OllIndexPage, self).__init__(None)
+        self.oll = oll
+        self.filename = os.path.join(__main__.appInfo.docPath, 'index.html')
+        self._stylesheets.append('css/detailPage.css')
+        self.templates['toc'] = ('<div class="container" id="toc">\n' +
+            '<h1>openlilylib</h1>\n<h2>Overview</h2>\n{}</div>\n')
+        
+    def bodyContent(self):
+        nav = LibraryNavigation(self.oll)
+        html = nav.navSection('names', 'By name:')
+        html += nav.navSection('categories', 'By category:')
+        
+        return self.templates['toc'].format(html)
+    
     
 class OllDetailPage(AbstractOllHtml):
     def __init__(self, ollItem):
@@ -354,11 +385,12 @@ class HtmlDetailFile(OllDetailPage):
     """OLL that will be printed to files."""
     def __init__(self, ollItem):
         super(HtmlDetailFile, self).__init__(ollItem)
+        self.filename = os.path.join(__main__.appInfo.docPath, self.ollItem.name + '.html')
         self._stylesheets.append('css/detailPage-file.css')
-        self.templates['body-content'] = ('<div id="nav">\n' +
-        '<h2>openlilylib</h2>\n{nav}\n</div>\n' +
+        self.templates['body-content'] = ('<div id="nav">\n{nav}\n</div>\n' +
             '<div id="detail">{detail}</div>')
-        self.templates['header-content'] = '<div id="header">\n{}</div>\n'
+        self.templates['header-content'] = ('<div class="container" id="page-header">\n' +
+            '<h1>openlilylib</h1>\n{}\n</div>\n')
         
     def bodyContent(self):
         """The document body has a different template in file based
@@ -367,21 +399,10 @@ class HtmlDetailFile(OllDetailPage):
             nav = LibraryNavigation(self.oll, self.ollItem.name).content(), 
             detail = super(HtmlDetailFile, self).bodyDetail())
 
-    def save(self):
-        """Save the file to disk.
-        Determine filename automatically from the snippet name
-        and use cached content if possible."""
-        filename = os.path.join(appInfo.docPath, self.ollItem.name + '.html')
-        f = open(filename, 'w')
-        try:
-            f.write(self.page())
-        finally:
-            f.close()
-
 class LibraryNavigation(object):
     """Generates a div container containing library navigation.
     Respects the currently opened snippet."""
-    def __init__(self, oll, currentItemName):
+    def __init__(self, oll, currentItemName = ''):
         self.oll = oll
         self.currentItem = currentItemName
         self.templates = {

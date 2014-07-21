@@ -35,6 +35,13 @@ div.container div.oll-header {
 	padding-bottom: 0.25em;
 }
 
+div#page-header {
+	padding:1em;
+	text-align: center;
+	font-weight: bold;
+	font-size: 150%;
+}
+
 pre {
 	padding-left: 0.5em;
 	padding-right: 0.5em;
