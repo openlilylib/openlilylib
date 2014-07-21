@@ -2,7 +2,7 @@
 # -*- coding: utf-8
 
 from PyQt4 import QtCore, QtGui
-import snippets
+import oll
 
 class MetadataWidget(QtGui.QFrame):
     def __init__(self, owner):

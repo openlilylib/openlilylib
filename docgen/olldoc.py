@@ -3,7 +3,7 @@
 
 import sys, os
 from PyQt4 import QtCore,  QtGui, QtWebKit
-import snippets
+import oll
 import metadata
 import docview
 
@@ -90,7 +90,7 @@ class MainWindow(QtGui.QMainWindow):
     
     def OLL(self):
         if not self._oll:
-            self._oll = snippets.OLL(self)
+            self._oll = oll.OLL(self)
         return self._oll
         
     def displayTree(self):

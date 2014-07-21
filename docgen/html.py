@@ -3,7 +3,7 @@
 
 from PyQt4 import QtCore, QtGui, QtWebKit
 import os
-import snippets
+import oll
 from __main__ import appInfo
 
 class AbstractHtml(object):
