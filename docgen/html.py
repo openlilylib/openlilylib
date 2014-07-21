@@ -256,14 +256,10 @@ class OllDetailPage(AbstractOllHtml):
         self.listTemplate = ('<div class="{n}"><span class="field-description">' +
                 '{t}: </span><ul>{c}</ul></div>')
 
-
     def bodyContent(self):
         """Return HTML for the page body.
         Subclasses can override individual sub-methods 
         of the HTML generation or this whole method."""
-        print "enter OllDetailPage.bodyContent"
-        print self.__doc__
-        print self.templates['body-content']
         return self.templates['body-content'].format(self.bodyDetail())
 
     def bodyDetail(self):
