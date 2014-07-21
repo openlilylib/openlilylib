@@ -39,7 +39,7 @@ class AbstractHtml(object):
             '<body>\n{headercontent}\n{bodycontent}\n</body>\n', 
             
             'body-content':
-            '<div id="content">\n{}</n>\n', 
+            '<div id="content">\n{}</div>\n', 
             
             'header-content': '', 
         }
