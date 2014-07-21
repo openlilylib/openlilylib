@@ -137,9 +137,9 @@ class MainWindow(QtGui.QMainWindow):
         self.displayTree()
         self.OLL().saveToHtml()
 
-    def showItem(self, snippet):
-        self.wvDocView.setHtml(snippet.htmlForDisplay().page())
-        self._oll.current = snippet.name
+    def showItem(self, item):
+        self.wvDocView.setHtml(item.htmlForDisplay().page())
+        self._oll.current = item.name
         
     def itemRowClicked(self, index):
         """When clicking on a row with a snippet name
@@ -148,9 +148,9 @@ class MainWindow(QtGui.QMainWindow):
         # determine the content of the clicked row
         # and lookup a snippet if it exists.
         name = unicode(self.modelBrowse.itemFromIndex(index).text())
-        snippet = self._oll.byName(name)
-        if snippet is not None:
-            self.showItem(snippet)
+        item = self._oll.byName(name)
+        if item is not None:
+            self.showItem(item)
 
 def main(argv):
     global appInfo, mainWindow

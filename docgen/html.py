@@ -371,9 +371,9 @@ class HtmlDetailFile(OllDetailPage):
 class LibraryNavigation(object):
     """Generates a div container containing library navigation.
     Respects the currently opened snippet."""
-    def __init__(self, oll, currentSnippetName):
+    def __init__(self, oll, currentItemName):
         self.oll = oll
-        self.currentSnippet = currentSnippetName
+        self.currentItem = currentItemName
         self.templates = {
             'container': '<div class="container" id="nav">\n{}\n</div>', 
             'nav-section': ('<div class="container" id="{id}">\n' +
@@ -424,19 +424,19 @@ class LibraryNavigation(object):
                     entries = self.navLinks(dict[entry]))
         return html
         
-    def navLinkItem(self, snippetName):
+    def navLinkItem(self, itemName):
         """Create a single list item representing a snippet.
         If it points to the currently displayed snippet
         only the snippet title is returned, otherwise
         a link is generated."""
-        ollItem = self.oll.byName(snippetName)
-        snippetTitle = ollItem.definition.headerFields['oll-title']
-        if snippetName != self.currentSnippet:
+        ollItem = self.oll.byName(itemName)
+        itemTitle = ollItem.definition.headerFields['oll-title']
+        if itemName != self.currentItem:
             return self.templates['link-li'].format(
-                link = snippetName + '.html', 
-                title = snippetTitle)
+                link = itemName + '.html', 
+                title = itemTitle)
         else:
-            return self.templates['link-li-act'].format(snippetTitle)
+            return self.templates['link-li-act'].format(itemTitle)
         
     def navLinks(self, group):
         """Create link items for all snippets in a group."""
