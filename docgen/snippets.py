@@ -207,13 +207,13 @@ class Snippet(QtCore.QObject):
     def htmlForDisplay(self):
         import html
         if self._displayHtml is None:
-            self._displayHtml = html.HtmlInline(self)
+            self._displayHtml = html.HtmlDetailInline(self)
         return self._displayHtml
         
     def htmlForFile(self):
         import html
         if self._fileHtml is None:
-            self._fileHtml = html.HtmlFile(self)
+            self._fileHtml = html.HtmlDetailFile(self)
         return self._fileHtml
         
     def saveHtml(self):

@@ -10,9 +10,13 @@ class AbstractHtml(object):
     """Abstract class for HTML documentation objects"""
     def __init__(self, snippet):
         # links to stylesheets
-        self.stylesheets = []
+        self._stylesheets = []
+        # links to script files
+        self._scripts = []
         # cache for generated html code
-        self.pageHtml = ''
+        self._headHtml = ''
+        self._bodyHtml = ''
+        self._pageTitle = ''
         
         # partial templates for the generation of HTML
         self.templates = {
@@ -20,55 +24,90 @@ class AbstractHtml(object):
             '<html>\n{head}\n{body}\n</html>', 
             
             'head':
-            '<head>\n{headcontent}\n</head>', 
+            '<head>\n{headcontent}\n</head>\n', 
+            
+            'page-title':
+            '<title>{}</title>\n', 
+            
+            'script':
+            '<link rel="script" href="{}" />\n', 
             
             'stylesheet':
             '<link rel="stylesheet" href="{}" />', 
             
             'body':
-            '<body>\n{bodycontent}\n</body>', 
+            '<body>\n{bodycontent}\n</body>\n', 
+            
+            'body-content':
+            '<div id="content">\n{}</n>\n', 
         }
             
     
     # ##########################################
     # Methods to compose parts of or whole pages
     
+    def body(self):
+        """Returns the complete body of an HTML page.
+        Results are cached, so data is only generated once."""
+        if self._bodyHtml == '':
+            self._bodyHtml = self.templates['body'].format(bodycontent = self.bodyContent())
+        return self._bodyHtml
+        
     def bodyContent(self):
         """Return HTML for the page body.
         Subclasses can override individual sub-methods 
         of the HTML generation or this whole method."""
-        html = self.headerSection()
-        html += self.metaSection()
-        html += self.statusSection()
-        html += self.customFieldsSection()
-        html += self.definitionBodySection()
-        html += self.exampleBodySection()
+        return self.templates['body-content'].format('No content specified here.')
         
+    def head(self):
+        """Returns the complete head of an HTML page.
+        Results are cached, so data is only generated once."""
+        if self._headHtml == '':
+            self._headHtml = self.templates['head'].format(headcontent = self.headContent())
+        return self._headHtml
+
+    def headContent(self):
+        """Content of the <head> section.
+        Empty if no stylesheets are defined."""
+        t = self._pageTitle if self._pageTitle else 'openlilylib documentation generator'
+        html = self.templates['page-title'].format(t)
+        html += self.stylesheets()
+        html += self.scripts()
+        return html
+    
+    def page(self):
+        """Return a whole HTML page."""
+        return self.templates['page'].format(
+            head = self.head(), 
+            body = self.body())
+        
+    def scripts(self):
+        """If the 'scripts' list has entries
+        they will be inserted in the <head> section
+        of the generated page."""
+        html = ''
+        for s in self._scripts:
+            html += self.templates['script'].format(s)
         return html
 
-    def page(self):
-        """Return a whole HTML page.
-        Results are cached, so the page is only generated once."""
-        if self.pageHtml == '':
-            self.pageHtml = self.templates['page'].format(
-                head = self.templates['head'].format(headcontent = self.headContent()), 
-                body = self.templates['body'].format(bodycontent = self.bodyContent()))
-        return self.pageHtml
-    
-    def stylesheetEntries(self):
+    def stylesheets(self):
         """If the 'stylesheets' list has entries
         they will be inserted in the <head> section
         of the generated page."""
         html = ''
-        for s in self.stylesheets:
+        for s in self._stylesheets:
             html += self.templates['stylesheet'].format(s)
         return html
     
 class AbstractOllHtml(AbstractHtml):
+    """Base class for HTML objects with specific OLL relations."""
     def __init__(self, snippet):
         super(AbstractOllHtml, self).__init__(snippet)
+        # hold references to the library objects
         self.snippet = snippet
         self.snippets = snippet.owner
+        # display string for undefined field
+        self._undefinedString = 'Undefined'
         # display titles for used fields
         self.fieldTitles = {
             'oll-version': 'Code version', 
@@ -84,27 +123,21 @@ class AbstractOllHtml(AbstractHtml):
             'oll-todo': 'TODOs, bugs and feature requests', 
             }
         self.templates.update( {
-            'section':
-            '<div class="container" id="{n}">\n{t}{c}\n</div>', 
-            
-            'section-heading':
-            '<h2 class="section">{}</h2>\n', 
-            
+            'status':
+            '{version}\n<h3>Compatibility:</h3>\n{compatibility}\n' +
+                '<h3 class="subsection">Status information</h3>\n{status}\n',  
+            'header':
+            '<div class="oll-header">\n{title}\n</div>\n' +
+                '<div class="oll-description">{description}\n</div>', 
+        })
+        self.fieldTemplates = {
             # generic field
             'field':
             '<div class="{f}">\n<span class="field-description">{t}: </span>\n' +
                 '<span class="field-content">{c}</span>\n</div>\n', 
             
             # specific fields with non-standard templates
-            'header':
-            '<div class="oll-header">\n{title}\n</div>\n' +
-                '<div class="oll-description">{description}\n</div>', 
-            
-            'status':
-            '{version}\n<h3>Compatibility:</h3>\n{compatibility}\n' +
-                '<h3 class="subsection">Status information</h3>\n{status}\n',  
-                
-            'oll-title': "<h1>{}</h1>", 
+            'oll-title': '<h1 class="oll-title">{}</h1>\n', 
                             
             'oll-source':
             '<div class="oll-source"><span class="field-description">' +
@@ -117,13 +150,10 @@ class AbstractOllHtml(AbstractHtml):
                 
             'oll-description':
             '<div class="oll-description">{}</div>\n', 
-            
-            'lilypond-code': '<pre class="lilypond">{}</pre>'
             }
-            )
 
         self.listTemplate = ('<div class="{n}"><span class="field-description">' +
-                '{t}: </span><ul>{c}</ul></div>')
+                '{t}: </span>\n<ul>\n{c}\n</ul>\n</div>\n')
 
     # ############################################
     # Generic functions to generate HTML fragments
@@ -144,36 +174,26 @@ class AbstractOllHtml(AbstractHtml):
             if content is None:
                 if not default:
                     return ''
-                content = "Undefined"
+                content = self._undefinedString
             else:
                 # convert double line breaks to HTML paragraphs
                 content = content.replace('\n\n', '</p><p>')
-            if fieldName in self.templates:
+            if fieldName in self.fieldTemplates:
                 # use template if defined for the given field
-                return self.templates[fieldName].format(content)
+                return self.fieldTemplates[fieldName].format(content)
             else:
                 # use generic template
                 # use defined field title or plain field name.
                 fieldTitle = self.fieldTitles[fieldName] if fieldName in self.fieldTitles else fieldName
-                return self.templates['field'].format(
+                return self.fieldTemplates['field'].format(
                    f = fieldName, 
                    t = fieldTitle, 
                    c = content)
 
     def fieldDocs(self, fieldNames, default = False):
-        """Return HTML for a number of fields."""
-        result = ''
-        for f in fieldNames:
-            result += self.fieldDoc(f, default)
-        return result
+        """Return HTML for a list of fields."""
+        return ''.join([self.fieldDoc(f, default) for f in fieldNames])
 
-    def headContent(self):
-        """Content of the <head> section.
-        Empty if no stylesheets are defined."""
-        html = '<title>{}</title>\n'.format(self.snippet.definition.headerFields['oll-title'])
-        html += self.stylesheetEntries()
-        return html
-    
     def itemList(self, fieldName, content):
         """Return HTML for a list of field values."""
         lst = ""
@@ -208,6 +228,7 @@ class AbstractOllHtml(AbstractHtml):
                 '<pre id="document">', '<pre class="lilypond">')
         except ImportError:
             # if python-ly isn't available we print plaintext output
+            print "python-ly not installed, generating unformatted LilyPond code."
             code = self.templates['lilypond-code'].format(code)
             
         return code
@@ -221,6 +242,39 @@ class AbstractOllHtml(AbstractHtml):
         return self.templates['section'].format(
             n = name, t = title, c = content)
     
+class OllDetailPage(AbstractOllHtml):
+    def __init__(self, snippet):
+        super(OllDetailPage, self).__init__(snippet)
+        self.templates.update( {
+            'section':
+            '<div class="container" id="{n}">\n{t}{c}\n</div>', 
+            
+            'section-heading':
+            '<h2 class="section">{}</h2>\n', 
+        })
+
+        self.listTemplate = ('<div class="{n}"><span class="field-description">' +
+                '{t}: </span><ul>{c}</ul></div>')
+
+
+    def bodyContent(self):
+        """Return HTML for the page body.
+        Subclasses can override individual sub-methods 
+        of the HTML generation or this whole method."""
+        print "enter OllDetailPage.bodyContent"
+        print self.__doc__
+        print self.templates['body-content']
+        return self.templates['body-content'].format(self.bodyDetail())
+
+    def bodyDetail(self):
+        html = self.headerSection()
+        html += self.metaSection()
+        html += self.statusSection()
+        html += self.customFieldsSection()
+        html += self.definitionBodySection()
+        html += self.exampleBodySection()
+        return html
+        
     # ##########################################
     # Methods to compose the individual sections
     # Subclasses may override these methods to
@@ -283,32 +337,29 @@ class AbstractOllHtml(AbstractHtml):
                                          'oll-todo'])), 
             'Status information')
 
-class OllDetailPage(AbstractOllHtml):
-    def __init__(self, snippet):
-        super(OllDetailPage, self).__init__(snippet)
-    
-class HtmlInline(OllDetailPage):
+
+class HtmlDetailInline(OllDetailPage):
     """Class for snippets to be displayed in the
     inline documentation viewer."""
     def __init__(self, snippet):
-        super(HtmlInline, self).__init__(snippet)
+        super(HtmlDetailInline, self).__init__(snippet)
 
 
-class HtmlFile(OllDetailPage):
+class HtmlDetailFile(OllDetailPage):
     """Snippets that will be printed to files."""
     def __init__(self, snippet):
-        super(HtmlFile, self).__init__(snippet)
-        self.stylesheets.append('css/detailPage-file.css')
-        self.templates['body'] = ('<div id="nav">\n' +
-        '<h2>openlilylib</h2><pre>{nav}</pre>\n</div>\n' +
+        super(HtmlDetailFile, self).__init__(snippet)
+        self._stylesheets.append('css/detailPage-file.css')
+        self.templates['body-content'] = ('<div id="nav">\n' +
+        '<h2>openlilylib</h2>\n{nav}\n</div>\n' +
             '<div id="detail">{detail}</div>')
         
     def bodyContent(self):
         """The document body has a different template in file based
-        detail pages. It has an additional navigation column."""
-        return self.templates['body'].format(
+        detail pages. It has an additional navigation column."""            
+        return self.templates['body-content'].format(
             nav = LibraryNavigation(self.snippets, self.snippet.name).content(), 
-            detail = super(HtmlFile, self).bodyContent())
+            detail = super(HtmlDetailFile, self).bodyDetail())
 
     def save(self):
         """Save the file to disk.
