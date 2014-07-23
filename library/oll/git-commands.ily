@@ -3,7 +3,7 @@
 \include "oll-base.ily"
 
 \header {
-  oll-title = "Print Git repository information"
+  oll-title = "Git repository information"
   oll-author = "Urs Liska, Lars Haulin"
   oll-source = "http://lilypondblog.org/2014/01/why-use-version-control-for-engraving-scores/#comment-34076"
   oll-short-description = \markup {
