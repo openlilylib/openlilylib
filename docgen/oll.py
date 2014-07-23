@@ -254,6 +254,7 @@ class OLL(QtCore.QObject):
     def initLists(self):
         self.items = {}
         self.names = []
+        self.titles = []
         self.categories = {'names': []}
         self.tags = {'names': []}
         self.authors = {'names': []}
@@ -274,6 +275,8 @@ class OLL(QtCore.QObject):
         # read all items
         for d in self.names:
             self.items[d] = OllItem(self, d)
+            self.titles.append(self.items[d].definition.headerFields['oll-title'])
+        self.titles.sort()
         # read all examples, ignore missing ones
         for x in xmps:
             self.items[x].addExample()
