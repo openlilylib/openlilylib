@@ -159,6 +159,8 @@ class AbstractOllHtml(AbstractHtml):
                 '<div class="oll-include-statement">\n<span class="field-description">' +
                 'Include statement: </span><code>\\include "oll/{include}.ily"</code>\n</div>\n'
                 '{usage}\n</div>', 
+            'usage-example':
+            '{pdflink}\n{content}\n', 
         })
         self.fieldTemplates = {
             # generic field
@@ -188,6 +190,10 @@ class AbstractOllHtml(AbstractHtml):
             
             'oll-usage':
             '{}\n', 
+            
+            'oll-usage-pdf':
+            '<div class="oll-usage-pdf"><a href="../usage-examples/{}"' +
+                'target="_blank">Download compiled PDF</a></div>'
             }
 
         self.listTemplate = ('<div class="{n}"><span class="field-description">' +
@@ -363,10 +369,17 @@ class OllDetailPage(AbstractOllHtml):
         """Return a usage example (if present) as LilyPond code."""
         if self.ollItem.hasExample():
             return self.section('example-body', 
-            self.lilypondToHtml(''.join(self.ollItem.example.filecontent)), 
+                self.templates['usage-example'].format(
+                    pdflink = self.getPdfExample(), 
+                    content = self.lilypondToHtml(''.join(self.ollItem.example.filecontent))), 
             'Usage example')
         else:
             return ''
+    
+    def getPdfExample(self):
+        """Return a link to a PDF of a usage example.
+        To be overridden in subclasses"""
+        return ''
         
     def headerSection(self):
         """Return  formatted title/author section."""
@@ -437,6 +450,16 @@ class HtmlDetailFile(OllDetailPage):
 #        return self.templates['body-content'].format(
 #            nav = LibraryNavigation(self.oll, self.ollItem.name).content(), 
 #            detail = super(HtmlDetailFile, self).bodyDetail())
+
+    def getPdfExample(self):
+        """Return a link to a PDF of a usage example if the file exists."""
+        result = ''
+        pdfname = self.ollItem.name + '.pdf'
+        fullPdfPath = os.path.join(__main__.appInfo.xmpPath, pdfname)
+        if os.path.isfile(fullPdfPath):
+            result = self.fieldTemplates['oll-usage-pdf'].format(pdfname)
+        return result
+
 
 class LibraryNavigation(object):
     """Generates a div container containing library navigation.
