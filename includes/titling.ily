@@ -20,3 +20,8 @@
     }
   }
 }
+
+\header {
+  copyright = \markup { Part of \typewriter openlilylib - licensed under the
+                      CreativeCommons ... }
+}
