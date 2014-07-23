@@ -398,17 +398,21 @@ class HtmlDetailFile(OllDetailPage):
         super(HtmlDetailFile, self).__init__(ollItem)
         self.filename = os.path.join(__main__.appInfo.docPath, self.ollItem.name + '.html')
         self._stylesheets.append('css/detailPage-file.css')
-        self.templates['body-content'] = ('<div id="nav">\n{nav}\n</div>\n' +
-            '<div id="detail">{detail}</div>')
+#         self.templates['body-content'] = ('<div id="nav">\n{nav}\n</div>\n' +
+#            '<div id="detail">{detail}</div>')
         self.templates['header-content'] = ('<div class="container" id="page-header">\n' +
             '<h1>openlilylib</h1>\n{}\n</div>\n')
         
-    def bodyContent(self):
-        """The document body has a different template in file based
-        detail pages. It has an additional navigation column."""            
-        return self.templates['body-content'].format(
-            nav = LibraryNavigation(self.oll, self.ollItem.name).content(), 
-            detail = super(HtmlDetailFile, self).bodyDetail())
+#    def bodyContent(self):
+#
+#    This function is only commented out for now because it is possible
+#    that we might need it again later.
+#
+#        """The document body has a different template in file based
+#        detail pages. It has an additional navigation column."""            
+#        return self.templates['body-content'].format(
+#            nav = LibraryNavigation(self.oll, self.ollItem.name).content(), 
+#            detail = super(HtmlDetailFile, self).bodyDetail())
 
 class LibraryNavigation(object):
     """Generates a div container containing library navigation.
