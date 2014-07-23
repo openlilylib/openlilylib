@@ -302,6 +302,8 @@ class OllDetailPage(AbstractOllHtml):
             'section-heading':
             '<h2 class="section">{}</h2>\n', 
         })
+        self.templates['body-content'] = ('<div id="col1">\n{col1content}\n' +
+            '</div>\n<div id="col2">\n{col2content}\n</div>')
 
         self.listTemplate = ('<div class="{n}"><span class="field-description">' +
                 '{t}: </span><ul>{c}</ul></div>')
@@ -310,15 +312,20 @@ class OllDetailPage(AbstractOllHtml):
         """Return HTML for the page body.
         Subclasses can override individual sub-methods 
         of the HTML generation or this whole method."""
-        return self.templates['body-content'].format(self.bodyDetail())
+        return self.templates['body-content'].format(
+            col1content = self.bodyDetail(), 
+            col2content = self.bodyMeta())
 
     def bodyDetail(self):
         html = self.headerSection()
-        html += self.metaSection()
-        html += self.statusSection()
-        html += self.customFieldsSection()
-        html += self.definitionBodySection()
         html += self.exampleBodySection()
+        html += self.definitionBodySection()
+        return html
+    
+    def bodyMeta(self):
+        html = self.metaSection()
+        html += self.customFieldsSection()
+        html += self.statusSection()
         return html
         
     # ##########################################
