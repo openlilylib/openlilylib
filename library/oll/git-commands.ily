@@ -3,7 +3,7 @@
 \include "oll-base.ily"
 
 \header {
-  oll-title = "Print Git repository information"
+  oll-title = "Git repository information"
   oll-author = "Urs Liska, Lars Haulin"
   oll-source = "http://lilypondblog.org/2014/01/why-use-version-control-for-engraving-scores/#comment-34076"
   oll-short-description = \markup {
@@ -20,9 +20,22 @@
     the current commit but also whether the repository is in a clean state
     (i.e. whether the score represents the state of a commit or contains
     modifications in the working tree).
-    
+
     The generic command \ollCommand gitCommand can be used to issue arbitrary Git
     commands. For a list of defined commands see the usage example.
+  }
+  oll-usage = \markup \justify {
+    The generic function \ollCommand gitCommand can be used to invoke a Git
+    command and print its result. The command expects a string with the Git
+    command without the \typewriter git keyword, e.g. \typewriter
+    { rev-parse --short HEAD }. Please note that only the first line of that
+    command will be considered. The result is returned as a \ollCommand markup
+    \ollCommand column{}. Please be very careful with commands that might
+    actually \italic modify the repository because no checks will be done
+    whatsoever. You're on your own risk here!
+
+    Usually you will use one of the predefined commands listed below.
+
   }
   oll-category = "project-management"
   % add comma-separated tags to make searching more effective:
@@ -30,24 +43,24 @@
   % is this snippet ready?  See meta/status-values.md
   oll-status = "unfinished, buggy"
 
-   oll-todo = \markup {
-     
-     - Gracefully handle missing Git installation
-     
-     - Gracefully handle the file not being in a repository
-     
-     - Complete a set of useful commands
-     
-     - Make it work on other operating systems.
-     
-     More ideas:
-     
-     - make commands work on specific commits
-       (take a committish as an optional argument)
-     
-     - Autocommit on LilyPond run???
-     
-   }
+  oll-todo = \markup {
+
+    - Gracefully handle missing Git installation
+
+    - Gracefully handle the file not being in a repository
+
+    - Complete a set of useful commands
+
+    - Make it work on other operating systems.
+
+    More ideas:
+
+    - make commands work on specific commits
+    (take a committish as an optional argument)
+
+    - Autocommit on LilyPond run???
+
+  }
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -77,8 +90,8 @@
    (let* ((result (string-split
                    (strsystem_internal (string-append "git " cmd))
                    #\newline)))
-       (interpret-markup layout props
-         #{ \markup \column #result #})))
+     (interpret-markup layout props
+       #{ \markup \column #result #})))
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -121,13 +134,13 @@ gitRevisionNumber = \markup { \gitCommand "log --oneline | wc -l" }
 % but it only returns a boolean value. So if you want to display
 % something based on this information you'll have to create the
 % markup for yourself.
-#(define-markup-command (gitIsCleanMarkup layout props yes-markup no-markup) 
+#(define-markup-command (gitIsCleanMarkup layout props yes-markup no-markup)
    (markup? markup?)
    (if (gitIsClean)
-   (interpret-markup layout props
-       #{ \markup #yes-markup #})
-   (interpret-markup layout props
-       #{ \markup #no-markup #})))
+       (interpret-markup layout props
+         #{ \markup #yes-markup #})
+       (interpret-markup layout props
+         #{ \markup #no-markup #})))
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % "Verbose" commands

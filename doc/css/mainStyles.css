@@ -4,6 +4,18 @@
 
 @import url(ly.css);
 
+div#col1 {
+	float: left;
+	width: 60%;
+}
+
+div#col2 {
+	float: right;
+	width: 39%;
+	padding-left: 1em;
+}
+
+
 h1, h2, h3 {
 	font-family: sans-serif;
 	margin-top: 0em;

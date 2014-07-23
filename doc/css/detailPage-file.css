@@ -7,13 +7,3 @@
 @import url(navStyles.css);
 @import url(fonts.css);
 
-div#nav {
-	float: left;
-	width: 30%;
-}
-
-div#detail {
-	float: right;
-	width: 70%;
-}
-

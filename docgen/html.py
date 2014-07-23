@@ -3,6 +3,7 @@
 
 from PyQt4 import QtCore, QtGui, QtWebKit
 import os
+import re
 import oll
 import __main__
 
@@ -129,6 +130,7 @@ class AbstractOllHtml(AbstractHtml):
         self.oll = None
         if ollItem:
             self.oll = ollItem.oll
+        self.markupParser = LilyPondMarkup()
         # display string for undefined field
         self._undefinedString = 'Undefined'
         # display titles for used fields
@@ -138,6 +140,7 @@ class AbstractOllHtml(AbstractHtml):
             'oll-author': 'Author(s)', 
             'oll-short-description': 'Short description', 
             'oll-description': 'Description', 
+            'oll-usage': 'Usage', 
             'oll-category': 'Category', 
             'oll-tags': 'Tags', 
             'first-lilypond-version': 'First known version', 
@@ -151,7 +154,11 @@ class AbstractOllHtml(AbstractHtml):
                 '<h3 class="subsection">Status information</h3>\n{status}\n',  
             'header':
             '<div class="oll-header">\n{title}\n</div>\n' +
-                '<div class="oll-description">{description}\n</div>', 
+                '<div class="oll-description">{description}\n</div>' +
+                '<div class="oll-usage">\n<h3>Usage</h3>\n' +
+                '<div class="oll-include-statement">\n<span class="field-description">' +
+                'Include statement: </span><code>\\include "oll/{include}.ily"</code>\n</div>\n'
+                '{usage}\n</div>', 
         })
         self.fieldTemplates = {
             # generic field
@@ -161,10 +168,15 @@ class AbstractOllHtml(AbstractHtml):
             
             # specific fields with non-standard templates
             'oll-title': '<h1 class="oll-title">{}</h1>\n', 
-                            
+            
+            'oll-include-statement':
+            '<div class="oll-include-statement">\n' +
+                '<span class="field-description">Include statement:</span>\n' +
+                '<code>\\include "oll/{}.ily"</code>\n</div>\n', 
+                
             'oll-source':
             '<div class="oll-source"><span class="field-description">' +
-                'Snippet source or other reference:</span><br />' +
+                'Source or other reference:</span><br />' +
                 '<span class="field-content">{}</span></div>', 
                 
             'oll-short-description':
@@ -172,7 +184,10 @@ class AbstractOllHtml(AbstractHtml):
                 '<span class="field-content">{}</span>\n</div>\n', 
                 
             'oll-description':
-            '<div class="oll-description">{}</div>\n', 
+            '{}\n', 
+            
+            'oll-usage':
+            '{}\n', 
             }
 
         self.listTemplate = ('<div class="{n}"><span class="field-description">' +
@@ -201,6 +216,9 @@ class AbstractOllHtml(AbstractHtml):
             else:
                 # convert double line breaks to HTML paragraphs
                 content = content.replace('\n\n', '</p><p>')
+            # convert \markup formatting to HTML
+            content = self.markupParser.toHtml(content)
+            # pass content to the right template
             if fieldName in self.fieldTemplates:
                 # use template if defined for the given field
                 return self.fieldTemplates[fieldName].format(content)
@@ -255,7 +273,7 @@ class AbstractOllHtml(AbstractHtml):
             code = self.templates['lilypond-code'].format(code)
             
         return code
-
+    
     def section(self, name, content, title = ''):
         """Generate a section of the page.
         If a title is given it will be converted to a heading,
@@ -292,6 +310,8 @@ class OllDetailPage(AbstractOllHtml):
             'section-heading':
             '<h2 class="section">{}</h2>\n', 
         })
+        self.templates['body-content'] = ('<div id="col1">\n{col1content}\n' +
+            '</div>\n<div id="col2">\n{col2content}\n</div>')
 
         self.listTemplate = ('<div class="{n}"><span class="field-description">' +
                 '{t}: </span><ul>{c}</ul></div>')
@@ -300,15 +320,20 @@ class OllDetailPage(AbstractOllHtml):
         """Return HTML for the page body.
         Subclasses can override individual sub-methods 
         of the HTML generation or this whole method."""
-        return self.templates['body-content'].format(self.bodyDetail())
+        return self.templates['body-content'].format(
+            col1content = self.bodyDetail(), 
+            col2content = self.bodyMeta())
 
     def bodyDetail(self):
         html = self.headerSection()
-        html += self.metaSection()
-        html += self.statusSection()
-        html += self.customFieldsSection()
-        html += self.definitionBodySection()
         html += self.exampleBodySection()
+        html += self.definitionBodySection()
+        return html
+    
+    def bodyMeta(self):
+        html = self.metaSection()
+        html += self.customFieldsSection()
+        html += self.statusSection()
         return html
         
     # ##########################################
@@ -349,16 +374,26 @@ class OllDetailPage(AbstractOllHtml):
             title = self.fieldDocs( 
                 ['oll-title','oll-short-description', 
                  'oll-author']), 
-            description = self.fieldDoc('oll-description'))
+            description = self.fieldDoc('oll-description'), 
+            include = self.ollItem.name,         
+            usage = self.fieldDoc('oll-usage'))
         return self.section('header', html)
         
     def metaSection(self):
         """Return section with snippet metadata"""
+        content = self.fieldDoc('oll-category')
+        # Add a list of links to other items in the same category (if available)
+        itemsInCategory = self.oll.categories[self.ollItem.definition.headerFields['oll-category']]
+        otherItems = [i for i in itemsInCategory if i != self.ollItem.name]
+        if len(otherItems) > 0:
+            content += '<p>Other items in that category:</p>\n'
+            content += '<ul>\n{}\n</ul>\n'.format(
+                LibraryNavigation(self.oll).navLinks(otherItems))
+        content += self.fieldDocs(
+            ['oll-tags', 
+             'oll-source'])
         return self.section(
-            'meta', self.fieldDocs(
-                ['oll-source', 
-                 'oll-category', 
-                 'oll-tags']), 
+            'meta', content, 
              'Metadata')
              
     def statusSection(self):
@@ -387,17 +422,21 @@ class HtmlDetailFile(OllDetailPage):
         super(HtmlDetailFile, self).__init__(ollItem)
         self.filename = os.path.join(__main__.appInfo.docPath, self.ollItem.name + '.html')
         self._stylesheets.append('css/detailPage-file.css')
-        self.templates['body-content'] = ('<div id="nav">\n{nav}\n</div>\n' +
-            '<div id="detail">{detail}</div>')
+#         self.templates['body-content'] = ('<div id="nav">\n{nav}\n</div>\n' +
+#            '<div id="detail">{detail}</div>')
         self.templates['header-content'] = ('<div class="container" id="page-header">\n' +
             '<h1>openlilylib</h1>\n{}\n</div>\n')
         
-    def bodyContent(self):
-        """The document body has a different template in file based
-        detail pages. It has an additional navigation column."""            
-        return self.templates['body-content'].format(
-            nav = LibraryNavigation(self.oll, self.ollItem.name).content(), 
-            detail = super(HtmlDetailFile, self).bodyDetail())
+#    def bodyContent(self):
+#
+#    This function is only commented out for now because it is possible
+#    that we might need it again later.
+#
+#        """The document body has a different template in file based
+#        detail pages. It has an additional navigation column."""            
+#        return self.templates['body-content'].format(
+#            nav = LibraryNavigation(self.oll, self.ollItem.name).content(), 
+#            detail = super(HtmlDetailFile, self).bodyDetail())
 
 class LibraryNavigation(object):
     """Generates a div container containing library navigation.
@@ -465,16 +504,67 @@ class LibraryNavigation(object):
         if itemName != self.currentItem:
             return self.templates['link-li'].format(
                 link = itemName + '.html', 
-                title = itemTitle)
+                title = itemTitle), itemTitle
         else:
-            return self.templates['link-li-act'].format(itemTitle)
+            return self.templates['link-li-act'].format(itemTitle), itemTitle
         
     def navLinks(self, group):
-        """Create link items for all snippets in a group."""
+        """Create link items for all snippets in a group.
+        The list is sorted by the displayed text."""
+        #TODO: Somehow this looks not really Pythonic to me ...
         html = ''
+        entries = {}
+        titles = []
         for entry in group:
-            html += self.navLinkItem(entry)
+            link, title = self.navLinkItem(entry)
+            entries[title] = link
+            titles.append(title)
+        titles.sort()
+        for t in titles:
+            html += entries[t]
         return html
         
+class LilyPondMarkup(object):
+    """Tries to parse LilyPond \markup sections
+    into HTML. It's not clear whether this is a
+    promising approach."""
+    def __init__(self):
+        self.processors = {
+            '\\ollCommand': '<code>\\{}</code>', 
+            '\\italic': '<i>{}</i>', 
+            '\\bold': '<b>{}</b>', 
+            '\\typewriter': '<code>{}</code>', 
+            }
+    
+    def getExpression(self, text, start):
+        """Split a string in an expression and a remainder.
+        The expression may be a single token or a string
+        surrounded by curly braces.
+        Currently no nesting is supported whatsoever."""
         
-
+        remainder = text[start:].lstrip()
+        if remainder[0] != '{':
+            expr = remainder.split()[0]
+            remainder = remainder[len(expr):]
+        else:
+            end = remainder.find('}')
+            expr = remainder[1:end-1].rstrip()
+            remainder = remainder[end+1:]
+        return expr, remainder
+        
+    def process(self, processor, text, start):
+        """Process a single instance of a known markup."""
+        expr, remainder = self.getExpression(text, start + len(processor) + 1)
+        return text[:start] +  self.processors[processor].format(expr) + remainder
+        
+    def toHtml(self, markup):
+        """Parse a given markup and replace LilyPond markup with HTML markup."""
+        result = markup
+        # Go through the list of known markup commands
+        for p in self.processors:
+            occurences = [m.start() for m in re.finditer('\\' + p, result)]
+            occurences.reverse()
+            # process all instances of a given markup command.
+            for o in occurences:
+                result = self.process(p, result, o)
+        return result
