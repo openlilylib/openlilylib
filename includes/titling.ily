@@ -8,12 +8,15 @@
     \column {
       { \bold \huge \fromproperty #'header:oll-title }
       { \fromproperty #'header:oll-short-description }
-      
+
       \concat { \vspace #1.5 "Author(s): " \fromproperty #'header:oll-author }
       \line { File to include: #includeName }
 
       \section "Introduction:"
       \fromproperty  #'header:oll-description
+
+      \section "Usage:"
+      \fromproperty #'header:oll-usage
     }
   }
 }

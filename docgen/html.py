@@ -140,6 +140,7 @@ class AbstractOllHtml(AbstractHtml):
             'oll-author': 'Author(s)', 
             'oll-short-description': 'Short description', 
             'oll-description': 'Description', 
+            'oll-usage': 'Usage', 
             'oll-category': 'Category', 
             'oll-tags': 'Tags', 
             'first-lilypond-version': 'First known version', 
@@ -153,7 +154,8 @@ class AbstractOllHtml(AbstractHtml):
                 '<h3 class="subsection">Status information</h3>\n{status}\n',  
             'header':
             '<div class="oll-header">\n{title}\n</div>\n' +
-                '<div class="oll-description">{description}\n</div>', 
+                '<div class="oll-description">{description}\n</div>' +
+                '<div class="oll-usage">\n{usage}\n</div>', 
         })
         self.fieldTemplates = {
             # generic field
@@ -174,7 +176,10 @@ class AbstractOllHtml(AbstractHtml):
                 '<span class="field-content">{}</span>\n</div>\n', 
                 
             'oll-description':
-            '<div class="oll-description">{}</div>\n', 
+            '{}\n', 
+            
+            'oll-usage':
+            '<h3>Usage</h3>\n{}\n', 
             }
 
         self.listTemplate = ('<div class="{n}"><span class="field-description">' +
@@ -354,7 +359,8 @@ class OllDetailPage(AbstractOllHtml):
             title = self.fieldDocs( 
                 ['oll-title','oll-short-description', 
                  'oll-author']), 
-            description = self.fieldDoc('oll-description'))
+            description = self.fieldDoc('oll-description'), 
+            usage = self.fieldDoc('oll-usage'))
         return self.section('header', html)
         
     def metaSection(self):

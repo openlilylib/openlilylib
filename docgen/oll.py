@@ -64,6 +64,7 @@ class OllItemDefinition(OllItemFile):
             'oll-title', 
             'oll-short-description', 
             'oll-description', 
+            'oll-usage', 
             'oll-author', 
             'oll-source', 
             'oll-category', 
