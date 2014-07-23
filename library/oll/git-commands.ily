@@ -24,6 +24,19 @@
     The generic command \ollCommand gitCommand can be used to issue arbitrary Git
     commands. For a list of defined commands see the usage example.
   }
+  oll-usage = \markup \justify {
+    The generic function \ollCommand gitCommand can be used to invoke a Git
+    command and print its result. The command expects a string with the Git
+    command without the \typewriter git keyword, e.g. \typewriter
+    { rev-parse --short HEAD }. Please note that only the first line of that
+    command will be considered. The result is returned as a \ollCommand markup
+    \ollCommand column{}. Please be very careful with commands that might
+    actually \italic modify the repository because no checks will be done
+    whatsoever. You're on your own risk here!
+
+    Usually you will use one of the predefined commands listed below.
+
+  }
   oll-category = "project-management"
   % add comma-separated tags to make searching more effective:
   oll-tags = "versioning,project-history,archiving"

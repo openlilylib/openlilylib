@@ -4,22 +4,6 @@
 \include "../includes/oll-example.ily"
 
 
-\markup \section "Usage:"
-
-\markup \justify { 
-  The generic function \ollCommand gitCommand can be used to invoke a Git
-  command and print its result. The command expects a string with the Git
-  command without the \typewriter git keyword, e.g. \typewriter 
-  { rev-parse --short HEAD }. Please note that only the first line of that
-  command will be considered. The result is returned as a \ollCommand markup
-  \ollCommand column{}. Please be very careful with commands that might 
-  actually \italic modify the repository because no checks will be done
-  whatsoever. You're on your own risk here!
-}
-
-\markup \justify {
-  Usually you will use one of the predefined commands listed below.
-}
 
 \markup \section "Examples:"
 \markup \justify {
