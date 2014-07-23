@@ -3,6 +3,7 @@
 
 from PyQt4 import QtCore, QtGui, QtWebKit
 import os
+import re
 import oll
 import __main__
 
@@ -129,6 +130,7 @@ class AbstractOllHtml(AbstractHtml):
         self.oll = None
         if ollItem:
             self.oll = ollItem.oll
+        self.markupParser = LilyPondMarkup()
         # display string for undefined field
         self._undefinedString = 'Undefined'
         # display titles for used fields
@@ -201,6 +203,9 @@ class AbstractOllHtml(AbstractHtml):
             else:
                 # convert double line breaks to HTML paragraphs
                 content = content.replace('\n\n', '</p><p>')
+            # convert \markup formatting to HTML
+            content = self.markupParser.toHtml(content)
+            # pass content to the right template
             if fieldName in self.fieldTemplates:
                 # use template if defined for the given field
                 return self.fieldTemplates[fieldName].format(content)
@@ -255,7 +260,7 @@ class AbstractOllHtml(AbstractHtml):
             code = self.templates['lilypond-code'].format(code)
             
         return code
-
+    
     def section(self, name, content, title = ''):
         """Generate a section of the page.
         If a title is given it will be converted to a heading,
@@ -485,5 +490,47 @@ class LibraryNavigation(object):
             html += entries[t]
         return html
         
+class LilyPondMarkup(object):
+    """Tries to parse LilyPond \markup sections
+    into HTML. It's not clear whether this is a
+    promising approach."""
+    def __init__(self):
+        self.processors = {
+            '\\ollCommand': '<code>\\{}</code>', 
+            '\\italic': '<i>{}</i>', 
+            '\\bold': '<b>{}</b>', 
+            '\\typewriter': '<code>{}</code>', 
+            }
+    
+    def getExpression(self, text, start):
+        """Split a string in an expression and a remainder.
+        The expression may be a single token or a string
+        surrounded by curly braces.
+        Currently no nesting is supported whatsoever."""
         
-
+        remainder = text[start:].lstrip()
+        if remainder[0] != '{':
+            expr = remainder.split()[0]
+            remainder = remainder[len(expr):]
+        else:
+            end = remainder.find('}')
+            expr = remainder[1:end-1].rstrip()
+            remainder = remainder[end+1:]
+        return expr, remainder
+        
+    def process(self, processor, text, start):
+        """Process a single instance of a known markup."""
+        expr, remainder = self.getExpression(text, start + len(processor) + 1)
+        return text[:start] +  self.processors[processor].format(expr) + remainder
+        
+    def toHtml(self, markup):
+        """Parse a given markup and replace LilyPond markup with HTML markup."""
+        result = markup
+        # Go through the list of known markup commands
+        for p in self.processors:
+            occurences = [m.start() for m in re.finditer('\\' + p, result)]
+            occurences.reverse()
+            # process all instances of a given markup command.
+            for o in occurences:
+                result = self.process(p, result, o)
+        return result
