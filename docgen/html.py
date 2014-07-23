@@ -372,11 +372,19 @@ class OllDetailPage(AbstractOllHtml):
         
     def metaSection(self):
         """Return section with snippet metadata"""
+        content = self.fieldDocs(
+            ['oll-source', 
+             'oll-category'])
+        # Add a list of links to other items in the same category (if available)
+        itemsInCategory = self.oll.categories[self.ollItem.definition.headerFields['oll-category']]
+        otherItems = [i for i in itemsInCategory if i != self.ollItem.name]
+        if len(otherItems) > 0:
+            content += '<p>Other items in that category:</p>\n'
+            content += '<ul>\n{}\n</ul>\n'.format(
+                LibraryNavigation(self.oll).navLinks(otherItems))
+        content += self.fieldDoc('oll-tags')
         return self.section(
-            'meta', self.fieldDocs(
-                ['oll-source', 
-                 'oll-category', 
-                 'oll-tags']), 
+            'meta', content, 
              'Metadata')
              
     def statusSection(self):
