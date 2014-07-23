@@ -9,6 +9,7 @@
     Draw a dashed vertical line to indicate a line break
     in the original source.
   }
+  
   oll-description = \markup \justify {
     When editing sketches and drafts one usually wants to indicate the
     line breaks of the original source. This can be achieved by either
@@ -20,16 +21,18 @@
     position in the measure and can not only appear at barlines. Internally
     a custom rehearsal mark is used.
   }
+  
   oll-usage = \markup \justify {
     Simply enter \ollCommand lineBreakMark at the musical position where
-    you want the sign to appear. The following example demonstrates that
-    you can place it anywhere in the measure, and that it doesn't 
-    interfere with regular rehearsal marks.
+    you want the sign to appear. The example demonstrates that you can place
+    it anywhere in the measure, and that it doesn't  interfere with regular
+    rehearsal marks.
   }
+  
   oll-category = "editorial-tools"
-  % add comma-separated tags to make searching more effective:
-  oll-tags = "markup,line breaks"
+  oll-tags = "diplomatic-transcription,line-breaks,alignments"
   oll-status = "ready"
+  
   oll-todo = \markup \justify {
     Currently the appearance of the dashed line cannot be configured.
     It would be nice if that could also be achieved using named styles.
