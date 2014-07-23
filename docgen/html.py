@@ -168,7 +168,7 @@ class AbstractOllHtml(AbstractHtml):
                             
             'oll-source':
             '<div class="oll-source"><span class="field-description">' +
-                'Snippet source or other reference:</span><br />' +
+                'Source or other reference:</span><br />' +
                 '<span class="field-content">{}</span></div>', 
                 
             'oll-short-description':
@@ -372,9 +372,7 @@ class OllDetailPage(AbstractOllHtml):
         
     def metaSection(self):
         """Return section with snippet metadata"""
-        content = self.fieldDocs(
-            ['oll-source', 
-             'oll-category'])
+        content = self.fieldDoc('oll-category')
         # Add a list of links to other items in the same category (if available)
         itemsInCategory = self.oll.categories[self.ollItem.definition.headerFields['oll-category']]
         otherItems = [i for i in itemsInCategory if i != self.ollItem.name]
@@ -382,7 +380,9 @@ class OllDetailPage(AbstractOllHtml):
             content += '<p>Other items in that category:</p>\n'
             content += '<ul>\n{}\n</ul>\n'.format(
                 LibraryNavigation(self.oll).navLinks(otherItems))
-        content += self.fieldDoc('oll-tags')
+        content += self.fieldDocs(
+            ['oll-tags', 
+             'oll-source'])
         return self.section(
             'meta', content, 
              'Metadata')
