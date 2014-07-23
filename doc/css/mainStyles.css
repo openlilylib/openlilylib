@@ -6,13 +6,13 @@
 
 div#col1 {
 	float: left;
-	width: 60%;
+	width: 64%;
 }
 
 div#col2 {
 	float: right;
-	width: 39%;
-	padding-left: 1em;
+	width: 34%;
+	padding-left: 0.8em;
 }
 
 
@@ -20,12 +20,13 @@ h1, h2, h3 {
 	font-family: sans-serif;
 	margin-top: 0em;
 	margin-bottom: 0em;
-	padding: 0.25em;
+	padding: 0em;
 }
 
 h2.section {
 	background-color: #203010;
 	color: rgb(240, 250, 230);
+	padding: 0.25em;
 }
 
 div.container {
