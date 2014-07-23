@@ -155,7 +155,10 @@ class AbstractOllHtml(AbstractHtml):
             'header':
             '<div class="oll-header">\n{title}\n</div>\n' +
                 '<div class="oll-description">{description}\n</div>' +
-                '<div class="oll-usage">\n{usage}\n</div>', 
+                '<div class="oll-usage">\n<h3>Usage</h3>\n' +
+                '<div class="oll-include-statement">\n<span class="field-description">' +
+                'Include statement: </span><code>\\include "oll/{include}.ily"</code>\n</div>\n'
+                '{usage}\n</div>', 
         })
         self.fieldTemplates = {
             # generic field
@@ -165,7 +168,12 @@ class AbstractOllHtml(AbstractHtml):
             
             # specific fields with non-standard templates
             'oll-title': '<h1 class="oll-title">{}</h1>\n', 
-                            
+            
+            'oll-include-statement':
+            '<div class="oll-include-statement">\n' +
+                '<span class="field-description">Include statement:</span>\n' +
+                '<code>\\include "oll/{}.ily"</code>\n</div>\n', 
+                
             'oll-source':
             '<div class="oll-source"><span class="field-description">' +
                 'Source or other reference:</span><br />' +
@@ -179,7 +187,7 @@ class AbstractOllHtml(AbstractHtml):
             '{}\n', 
             
             'oll-usage':
-            '<h3>Usage</h3>\n{}\n', 
+            '{}\n', 
             }
 
         self.listTemplate = ('<div class="{n}"><span class="field-description">' +
@@ -367,6 +375,7 @@ class OllDetailPage(AbstractOllHtml):
                 ['oll-title','oll-short-description', 
                  'oll-author']), 
             description = self.fieldDoc('oll-description'), 
+            include = self.ollItem.name,         
             usage = self.fieldDoc('oll-usage'))
         return self.section('header', html)
         
