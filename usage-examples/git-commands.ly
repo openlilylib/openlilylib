@@ -1,9 +1,6 @@
 \version "2.16.0"
 
-#(define moduleName "git-commands")
-\include "../includes/oll-example.ily"
-
-
+\include "oll-usage-example.ily"
 
 \markup \section "Examples:"
 \markup \justify {

@@ -1,9 +1,16 @@
 % Formats for example pages in openlilylib documentation
 
-% Determine include path to the module file and include it
-#(define includeName 
-   (string-append (string-append "oll/" moduleName) ".ily"))
+% Determine include path to the module file and include it.
+
+getBaseName =
+#(define-scheme-function (parser location)()
+   (ly:parser-output-name parser))
+
+#(define includeName
+   (string-append (string-append "oll/" #{ \getBaseName #} ) ".ily"))
+
 \include \includeName
+
 
 #(ly:set-option 'relative-includes #t)
 
@@ -29,4 +36,4 @@
 
 % Consistently format and process headers and footers,
 % populated with data from the snippet's file
-\include "titling.ily"
+\include "../includes/titling.ily"
