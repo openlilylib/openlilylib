@@ -101,16 +101,16 @@
   own markup command around it or use the following command with arguments.
 }
 \markup \vspace #1
-  
+
 \markup \line {
   \ollCommand gitIsCleanMarkup
   "- returns custom markup depending on the repository state."
 }
 \markup \justify {
   This markup command takes two string arguments specifying the output strings
-  to be used for each of the two states. 
+  to be used for each of the two states.
 }
-\markup \line { "The current repository" 
+\markup \line { "The current repository"
                 \bold \gitIsCleanMarkup "has no" "does have"
                   "uncommitted changes" }
 \markup \vspace #0.25
@@ -132,7 +132,7 @@
 
 \markup \vspace #1
 
- 
+
 \markup {
   \override #'(baseline-skip . 2)
   \tiny \typewriter
