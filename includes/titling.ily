@@ -10,12 +10,12 @@
       { \fromproperty #'header:oll-short-description }
 
       \concat { \vspace #1.5 "Author(s): " \fromproperty #'header:oll-author }
-      
+
       \section "Introduction:"
       \fromproperty  #'header:oll-description
 
       \section "Usage:"
-      \line { File to include: #includeName }
+      \typewriter \concat { "\\include \"" #includeName "\"" }
       \vspace #1
       \fromproperty #'header:oll-usage
       \vspace #1
