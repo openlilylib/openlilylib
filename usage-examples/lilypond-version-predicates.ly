@@ -1,16 +1,7 @@
-\version "2.16.0" % This should also work with older versions
+\version "2.16.0"
 
-\include "oll/lilypond-version-predicates.ily"
-\include "../includes/oll-example.ily"
+\include "oll-usage-example.ily"
 
-\header {
-  title = \markup \fromproperty #'header:oll-title
-  subtitle = \markup \fromproperty #'header:oll-short-description
-}
-
-\paper {
-  ragged-right = ##f
-}
 
 versionCommentA =
 #(define-music-function (parser location ver)
@@ -30,13 +21,16 @@ versionCommentB =
          ((lilypond-less-than? ver)
           #{ s^\markup {#(lilypond-version) is less} #})))
 
-\markup { \vspace #3 }
+\markup \section {Examples:}
 
 \markup \justify {
-  Define a few music functions that produce output
-  depending on the result of LilyPond version comparisons.
+  To use the provided predicates you should define a music function which
+  contains an \typewriter if or a \typewriter cond expression and return
+  different content depending on the result of th predicate.
   Compile this file with different versions of LilyPond
-  and see how the output markups change.
+  and see how the output markups change. If the file is outdated (i.e. \italic
+  all your LilyPond versions are newer than the ones compared with) feel free
+  to change the versions used as comparisons in the example.
 }
 
 \markup { \vspace #3 }
