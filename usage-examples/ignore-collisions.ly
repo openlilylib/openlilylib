@@ -24,7 +24,9 @@
   >>
 }
 
-\markup { Using \ollCommand ignoreCollision will suppress this warning }
+\markup \justify { Using \ollCommand ignoreCollision will suppress this warning but highlight the
+  affected note head.
+}
 
 \relative c'' {
   <<

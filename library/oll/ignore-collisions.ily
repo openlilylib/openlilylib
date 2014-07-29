@@ -18,8 +18,10 @@
     \ollCommand ignoreCollision will suppress a compiler warning about clashing
     note columns that is triggered immediately afterwards. The command affects
     only the current voice, so it is very to the point of the expected note column
-    clash. Usually that is the  preferred way to use this snippet. Using \ollCommand
-    ignoreCollisions will suppress \italic all compiler warnings (about clashing note
+    clash. Usually that is the  preferred way to use this snippet. When \typewriter
+    devMode is active \ollCommand ignoreCollision will be colored with \typewriter
+    {dev-mode-color-comment.}
+    \ollCommand ignoreCollisions will suppress \italic all compiler warnings (about clashing note
     columns) until \ollCommand warnOnCollisions is used. Use this variant with care
     as it will also suppress valid warnings that you may \italic not expect.
   }
@@ -39,7 +41,17 @@
 % or when hiding voices (although for tying the
 % \hideVoiceForTie approach is recommended)
 %
-ignoreCollision = \once \override NoteColumn #'ignore-collision = ##t
+ignoreCollision =
+#(define-music-function (parser location)()
+       (if dev-mode
+       #{
+          \once \override NoteHead #'color = #dev-mode-color-comment
+          \once \override NoteColumn #'ignore-collision = ##t
+       #}
+       #{
+          \once \override NoteHead #'color = #dev-mode-color-comment
+       #}))
+
 
 % Use this one with care, as it will prevent lilypond from
 % warning you about real problems
