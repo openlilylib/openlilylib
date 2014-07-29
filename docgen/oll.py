@@ -158,7 +158,14 @@ class OllItemDefinition(OllItemFile):
         """Split fields that are given as comma-separated lists
         into Python lists."""
         for f in fields:
-            lst = self.tagList(self.headerFields[f])
+            lst = self.headerFields[f]
+            if lst is None:
+                raise Exception(('Input error.\n' +
+                                'Field {fn} missing in file {n}.' +
+                                'Please check definition .ily file').format(
+                                    fn = f, 
+                                    n = self.ollItem.name))
+            lst = self.tagList(lst)
             lst.sort()
             # if there is only one entry use a simple string
             if len(lst) == 1:
