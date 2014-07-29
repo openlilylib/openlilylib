@@ -138,9 +138,12 @@ class OllItemDefinition(OllItemFile):
             if i == len(self.headercontent):
                 return i
         line = self.headercontent[i].strip()
+        if line.startswith('%'):
+            i += 1
+            return i
         fieldName = line[:line.find('=')-1].strip()
         fieldContent = self.getFieldString(line)
-        if not fieldContent:
+        if fieldContent is None:
             fieldContent = ""
             i += 1
             while not self.headercontent[i].strip() == '}':
