@@ -14,7 +14,7 @@
     a score.
   }
   oll-usage = \markup \justify {
-    
+
   }
   % add one single category.
   % see ??? for the list of valid entries
@@ -30,7 +30,7 @@
   first-lilypond-version = ""
   last-lilypond-version = ""
 
-% optionally add comments on issues and enhancements
+  % optionally add comments on issues and enhancements
   oll-todo = ""
 }
 
@@ -43,8 +43,17 @@
 % in the /usage-examples directory.
 %%%%%%%%%%%%%%%%%%%%%%%%
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Editorial productivity tools: comment, discuss, todo and poke
+#(define dummy-usage-variable #f)
+% This is a temporary variable to start harvesting the definition section from here
+
+% Define message strings to pretty-print console output
+#(define isc-separator "######")
+
+#(define (isc-top-separator heading)
+   (format "\n~a\n# ~a\n" isc-separator heading))
+
+#(define isc-bottom-separator (format "#\n~a\n\n" isc-separator))
+  
 
 %{ \comment
    Post an editor's comment in the source file and attach it to a grob.
@@ -54,47 +63,56 @@
    Usage: \comment grob-name comment. Place immediately before the grob in question.
           \comment DynamicText "mf according to autograph" a\mf
 
-   grob-name
+ grob-name
    is the name of the affected grob (works with or without quotation marks)
-   comment
+ comment
    isn't used in the function itself, but only serves as the practical place for the comment,
    which is also consistent with \discuss and \todo, so the are interchangeable.
-   Should be a rather short string. If there is the need for a longer comment, it should
-   be entered as a regular (multi-line) comment and only referenced
-   in the function.
 
    It is basically a syntax for entering short comments,
-   and it enables draftMode to color the corresponding grob
-   with the default #editorial-remark-color
-   In this file it is just a void music function,
-   necessary to provide a coherent input syntax
+   and it enables devMode to color the corresponding grob
+   with the default 'dev-mode-color-comment color.
+   When devMode is active this can be used to access the source comment
+   through point-and-click.
 %}
 comment =
 #(define-music-function (parser location grob comment)
    (string? string?)
-   #{
-     % issue void music expression
-   #})
+   (if dev-mode
+       #{
+         \once \override $grob #'color = #dev-mode-color-comment
+       #}
+       #{
+         % issue void music expression
+       #}))
 
-%{
-  \discuss
-  Post an editor's comment in the source file and attach it to a grob.
-  It is very similar to \comment, but additionally issues a warning to the console.
-  The comment parameter isn't used in the function because it is visible in the
-  warning anyway. It should be used as a reminder for musical (or technical) issues that
-  should still be taken care of.
-  DraftMode also colors the grob with #editorial-remark-color.
-  When the issue is dealt with, \discuss should be either removed or changed to \comment,
-  but without draftMode it doesn't have any effect on the layout.
+%{ \discuss
+   Post an editor's comment in the source file and attach it to a grob.
+   It is very similar to \comment, but additionally issues a warning to the console.
+   The comment parameter isn't used in the function because it is visible in the
+   warning anyway. It should be used as a reminder for musical (or technical) issues that
+   should still be taken care of.
+   The comment will be shown as part of the "location" excerpt in the console output,
+   so it hould be a rather short string. If there is the need for a longer comment, it should
+   be entered as a regular (multi-line) comment and only referenced
+   in the function.
+   devMode also colors the grob with #dev-mode-color-discuss.
+   When the issue is dealt with, \discuss should be either removed or changed to \comment,
+   but without devMode it doesn't have any effect on the layout.
 %}
-
 discuss =
 #(define-music-function (parser location grob comment)
    (string? string?)
-   (ly:input-warning location "Editor's remark")
-   #{
-     % issue void music expression
-   #})
+   (ly:message (isc-top-separator "Editor's remark:"))
+   (ly:input-message location "")
+   (ly:message isc-bottom-separator)
+   (if dev-mode
+       #{
+         \once \override $grob #'color = #dev-mode-color-discuss
+       #}
+       #{
+         % issue void music expression
+       #}))
 
 %{
   \todo
@@ -107,13 +125,14 @@ discuss =
   So it should be also visible in pub mode to indicate that isn't solved yet.
   When the issue is solved \todo must be removed or renamed to \comment
 %}
-
 todo =
 #(define-music-function (parser location grob comment)
    (string? string?)
-   (ly:input-warning location "Editor's warning")
+   (ly:message (isc-top-separator "Editor's TODO item:"))
+   (ly:input-warning location "")
+   (ly:message isc-bottom-separator)
    #{
-     \once \override $grob #'color = #todo-warning-color
+     \once \override $grob #'color = #dev-mode-color-todo
    #})
 
 %{
@@ -123,7 +142,7 @@ todo =
 
   Usage: \followup author comment
 
-  Unlike these a \followup isn't attached to a grob, but issues a compiler warning.
+  Unlike these a \followup isn't attached to a grob, but issues a compiler message.
   This can be used to comment on comments and see have an overview in the console window.
   It probably works best when placed at the beginning of a new line.
   the comment argument isn't used in the function but shown in the console as
@@ -133,30 +152,9 @@ todo =
 followup =
 #(define-music-function (parser location author comment)
    (string? string?)
-   (ly:input-warning location author)
+   (ly:message (isc-top-separator "Follow-up:"))
+   (ly:input-message location "")
+   (ly:message isc-bottom-separator)
    #{
      % issue void music expression
    #})
-
-%{ \poke
-   Similar to Facebook's poke function
-   this command is used to bring someone's attention to a speficic item
-
-   Usage: \poke grob-name. Place immediately before the grob in question.
-          \poke Slur ...
-
-   grob-name
-   is the name of the affected grob (works with or without quotation marks)
-
-   \poke enables draftMode to color the corresponding grob
-   with the special #poke-color
-   In this file it is just a void music function,
-   necessary to provide a coherent input syntax
-%}
-poke =
-#(define-music-function (parser location grob)
-   (string?)
-   #{
-     % issue void music expression
-   #})
-
