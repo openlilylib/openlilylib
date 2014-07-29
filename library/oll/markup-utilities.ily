@@ -25,9 +25,9 @@
   % add comma-separated tags to make searching more effective.
   % preferrably use tags that already exist (see ???).
   % tag names should use lowercase and connect words using dashes.
-  tags = "string, markup, utility"
+  oll-tags = "string, markup, utility"
   % is this snippet ready?  See ??? for valid entries
-  status = "unfinished"
+  oll-status = "unfinished"
 
   % add information about LilyPond version compatibility if available
   first-lilypond-version = ""
