@@ -11,20 +11,26 @@
   oll-source = ""
   oll-description = \markup \justify {
     This module contains commands to enter annotations and comments to elements of
-    a score.
+    a score. They are primarily intended to enable different editors of a score to
+    communicate directly in the source files. There are \ollCommand {comment},
+    \ollCommand {discuss}, \ollCommand {todo} and \ollCommand followup commands
+    available, with slightly different behaviour. Most of them issue a compiler
+    message in the console output serving as a communication channel. In addition
+    they work together with the \italic devMode concept, so the different types
+    of commands colorize the affected grobs while devMode is active.
   }
   oll-usage = \markup \justify {
-
+    Write the commands on a single line, using \typewriter { <command> <grob> <message> }
+    syntax (except for the \ollCommand followup command). The grob names the affected
+    grob type, the message should be quite short to fit in one line of console output.
+    If longer comments are necessary they should be added as regular source comments.
+    Clicking on the notes (when point-and-click is enabled) or the console messages
+    will point you to the relevant point in the input file if you have set up your
+    system appropriately.
   }
-  % add one single category.
-  % see ??? for the list of valid entries
-  oll-category = "markup"
-  % add comma-separated tags to make searching more effective.
-  % preferrably use tags that already exist (see ???).
-  % tag names should use lowercase and connect words using dashes.
-  tags = "string, markup, utility"
-  % is this snippet ready?  See ??? for valid entries
-  status = "unfinished"
+  oll-category = "project-management"
+  oll-tags = "communication,editorial-tools"
+  oll-status = "ready"
 
   % add information about LilyPond version compatibility if available
   first-lilypond-version = ""
@@ -53,7 +59,7 @@
    (format "\n~a\n# ~a\n" isc-separator heading))
 
 #(define isc-bottom-separator (format "#\n~a\n\n" isc-separator))
-  
+
 
 %{ \comment
    Post an editor's comment in the source file and attach it to a grob.
