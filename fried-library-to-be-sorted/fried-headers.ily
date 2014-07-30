@@ -4,6 +4,8 @@
 % probably change some names, don't use proprietary font, remove spurious comments(?)
 % update syntax to 2.18?
 
+% Comment UL: Is this really something to preserve in the library?
+
 \header {
   % Dummy header fields
   % Used to see whether the actual values are still missing
@@ -13,7 +15,7 @@
   opusmain = "X"
   opussub = "x"
 
-  % copyright and tagline are replaced by oddFooterMarkup 
+  % copyright and tagline are replaced by oddFooterMarkup
   copyright = ""
   tagline = ""
 
@@ -62,7 +64,7 @@
     % Page numbers are displayed in draftMode
     % and hidden in pubMode
     % \pageNumber is defined in includes/library/showPageNumbers.ily,
-    % defaults to invisible (global.ily) 
+    % defaults to invisible (global.ily)
     % and changed to visible in draftMode.ily
     \pageNumber
   }
