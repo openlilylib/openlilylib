@@ -28,6 +28,8 @@ devModeOn = #(define dev-mode #t)
         (define dev-mode-color-todo magenta)))
 #(cond ((not (defined? 'dev-mode-color-switch))
         (define dev-mode-color-switch cyan)))
+#(cond ((not (defined? 'dev-mode-color-tweak))
+        (define dev-mode-color-tweak blue)))
 
 
 
