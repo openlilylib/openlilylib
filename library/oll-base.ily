@@ -26,6 +26,10 @@ devModeOn = #(define dev-mode #t)
         (define dev-mode-color-discuss green)))
 #(cond ((not (defined? 'dev-mode-color-todo))
         (define dev-mode-color-todo magenta)))
+#(cond ((not (defined? 'dev-mode-color-switch))
+        (define dev-mode-color-switch cyan)))
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Commands for consistency of documentation
@@ -35,6 +39,13 @@ devModeOn = #(define dev-mode #t)
    (interpret-markup layout props
      #{
        \markup \typewriter \with-color #blue \concat { "\\" #name }
+     #}))
+
+% typeset a ollItem name as a reference to another file in the library
+#(define-markup-command (ollRef layout props name)(markup?)
+   (interpret-markup layout props
+     #{
+       \markup \typewriter \with-color #darkred #name
      #}))
 
 % Ensure that all header fields are initialized with a default value.
