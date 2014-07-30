@@ -2,6 +2,8 @@
 % (keep the above line if the snippet should *not* be updated with convert-ly)
 \version "2.16.2" % absolutely necessary!
 
+\include "oll-base.ily"
+
 \header {
   oll-title = "Example snippet"
   oll-short-description = \markup {
