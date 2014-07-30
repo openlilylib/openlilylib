@@ -1,4 +1,48 @@
-\version "2.17.3"
+\version "2.16.2" % absolutely necessary!
+
+\include "oll-base.ily"
+
+\header {
+  oll-title = "Tweak shorthands"
+  oll-short-description = \markup {
+    Shorthands for regular tweaking operations
+  }
+  % provide a comma-separated list to credit multiple authors
+  oll-author = "Janek Warchoł, Urs Liska"
+  oll-source = ""
+  oll-description = \markup \justify {
+    Despite the goal of providing \italic {automatic engraving} it is
+    regularly necessary to apply manual tweaks. This module provides a
+    number of "\"generic\"" tweaks to save typing and increase consistency.
+    Apart from that they benefit from the \typewriter devMode concept.
+  }
+  % add one single category.
+  % see ??? for the list of valid entries
+  oll-category = "none"
+  % add comma-separated tags to make searching more effective.
+  % preferrably use tags that already exist (see ???).
+  % tag names should use lowercase and connect words using dashes.
+  oll-tags = ""
+  % is this snippet ready?  See ??? for valid entries
+  oll-status = ""
+
+  % add information about LilyPond version compatibility if available
+  first-lilypond-version = ""
+  last-lilypond-version = ""
+
+  % optionally add comments on issues and enhancements
+  oll-todo = ""
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+% here goes the snippet:
+% Anything below this line will be ignored by generated documentation.
+% The snippet itself should (usually) *not* produce any output because
+% it will be included in end-user files. To provide usage examples
+% please create a file with the same name but an .ly extension
+% in the /usage-examples directory.
+%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 % TODO: add oll/snippets headers, add example.
 % split into several files
@@ -15,21 +59,33 @@
 moveNote =
 #(define-music-function (parser location amount)
    (number?)
-   #{
-     \once \override NoteColumn #'force-hshift = #amount
-   #})
+   (if dev-mode
+       #{
+         \once \override NoteColumn #'force-hshift = #amount
+         \once \override NoteHead #'color = #dev-mode-color-tweak
+       #}
+       #{
+         \once \override NoteColumn #'force-hshift = #amount
+       #}))
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Move a rest up or down when LilyPond doesn't do the right thing
 
-moveRest =
+restPos =
 #(define-music-function (parser location staff-position)
    (integer?)
-   #{
-     \once \override Rest #'staff-position = #staff-position
-     \once \override MultiMeasureRest #'staff-position = #staff-position
-   #})
+   (if dev-mode
+       #{
+         \once \override Rest #'staff-position = #staff-position
+         \once \override Rest #'color = #dev-mode-color-tweak
+         \once \override MultiMeasureRest #'staff-position = #staff-position
+         \once \override MultiMeasureRest #'color = #dev-mode-color-tweak
+       #}
+       #{
+         \once \override Rest #'staff-position = #staff-position
+         \once \override MultiMeasureRest #'staff-position = #staff-position
+       #}))
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
