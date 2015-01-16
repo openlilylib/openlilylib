@@ -13,7 +13,7 @@
   % add comma-separated tags to make searching more effective:
   tags = "guitar, bend, string bending"
   % is this snippet ready?  See meta/status-values.md
-  status = "undocumented"
+  status = "buggy"
 }
 
 % TODO:
@@ -196,8 +196,8 @@ thickness begin-x line-y end-x line-y))))
           (left-tab-note-head (ly:grob-property left-bound 'cause))
           (right-tab-note-head (ly:grob-property right-bound 'cause))
           (control-points (ly:grob-property grob 'control-points))
-          ;;changed: car and cadddr changed to: first and last
-          (left-point (first control-points))
+          (left-point (car control-points))
+          ;;changed: cadddr changed to last
           (right-point (last control-points))
           (left-pitch  (ly:event-property (event-cause left-bound) 'pitch))
           (right-pitch (ly:event-property (event-cause right-bound) 'pitch))
@@ -395,10 +395,13 @@ thickness begin-x line-y end-x line-y))))
 
 %%% music functions
 
-bendOn = {
+bendOn =
+#(define-music-function (parser location note) (ly:music?)
+#{
   \override Voice.Slur #'stencil = #slur::draw-pointed-slur
   \override TabVoice.Slur #'stencil = #slur::draw-bend-arrow
-}
+  $note \noBreak
+#})
 
 bendOff = {
   \revert Voice.Slur #'stencil
