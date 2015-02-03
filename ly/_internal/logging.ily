@@ -53,7 +53,7 @@ openLogfile =
         #{ \openLogfile #}
         (if (ly:input-location? location)
             (begin
-             (ly:input-warning 
+             (ly:input-warning location
               (format
                (string-append "openLilyLib: " fmt) vals))
              (format oll-logfile fmt vals))
