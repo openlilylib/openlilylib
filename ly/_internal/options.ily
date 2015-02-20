@@ -48,9 +48,11 @@
 % #2: initial value
 %     If the user doesn't set the option explicitly this value is assumed
 registerOption =
-#(define-void-function (parser location opt-path init)
-   (list? scheme?)
-   #{ \setatree openlilylib-options #opt-path #init #})
+#(define-void-function (parser location opt-path pred init)
+   (list? (procedure?) scheme?)
+   (let ((predicate (or pred scheme?)))
+   #{ \setatree openlilylib-options #(append opt-path '(pred)) #predicate
+      \setatree openlilylib-options #(append opt-path '(value)) #init #}))
 
 % Convenience function to determine if an option is set.
 % can be used to avoid warnings when trying to access unregistered options.
@@ -79,7 +81,8 @@ setOption =
    (list? scheme?)
    (if #{ \optionRegistered #opt-path #}
        (begin
-        #{ \setatree openlilylib-options #opt-path #val #}
+        #{ \setatree openlilylib-options
+           #(append opt-path '(value)) #val #}
         (oll:log location "Option set: ~a"
           (format "~a: ~a"
             (dot-path->string opt-path) val)))
@@ -92,7 +95,8 @@ setOption =
 getOption =
 #(define-scheme-function (parser location opt-path)
    (list?)
-   (let ((value #{ \optionRegistered #opt-path #}))
+   (let ((value #{ \optionRegistered
+                   #(append opt-path '(value)) #}))
      (if value
          (cdr value)
          (begin
@@ -104,7 +108,8 @@ getOption =
 getOptionWithFallback =
 #(define-scheme-function (parser location opt-path fallback)
    (list? scheme?)
-   (let ((value #{ \optionRegistered #opt-path #}))
+   (let ((value #{ \optionRegistered
+                   #(append opt-path '(value)) #}))
      (if value
          (cdr value)
          fallback)))
