@@ -64,24 +64,36 @@ registerLibrary =
 % path we assume it is a directory and try to load a file "__main__.ily"
 % inside that directory.
 loadModule =
-#(define-void-function (parser location path)(string?)
+#(define-void-function (parser location path)(symbol-list?)
    "Load an openLilyLib module if it has not been already loaded."
    (let*
-    ((path-list (string-split path #\/))
-     (lib (first path-list))
+    ((path-list
+      (map
+       (lambda (p)
+         (symbol->string p))
+         path))
+     (lib
+      (if (string=? "internal" (first path-list))
+          "_internal"
+          (first path-list)))
      (last-elt
-      (if (string-index (last path-list) #\.)
-          ;; if the last element is a file (with extension)
-          ;; we don't do anything, otherwise we append the
-          ;; default "module name"
-          '()
+      (if (string=? "ily" (last path-list))
+          '("")
           '("__main__.ily")))
-     (append-path (string-join
-                   (append path-list last-elt) "/"))
+     (inner-path
+      (cdr (reverse (cdr path-list))))
+     (append-path
+      (string-append
+       (string-join 
+        (append `(,lib) inner-path) "/")
+         (if (string=? "" (car last-elt))
+            ".ily"
+            "/__main__.ily")))
      (load-path (string-append
                  #{ \getOption global.root-path #}
                  "/"
                  append-path)))
+    (ly:message load-path)
     ;; try to load the file if it isn't already present
     (if (member load-path oll-loaded-modules)
         (oll:log "module ~a already loaded. Skipping." load-path)

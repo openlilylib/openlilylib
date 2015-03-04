@@ -42,10 +42,10 @@
 \loadModule "example"
 
 #(ly:message "\nTry to load a module that is already loaded:")
-\loadModule "example/load-test.ily"
+\loadModule example.load-test.ily
 
 #(ly:message "\nTry to load a non-existent module:")
-\loadModule "example/this/is/not/a/module.ily"
+\loadModule example.this.is.not.any.module.ily
 
 
 #(ly:message "Use a command defined in the loaded modules")
