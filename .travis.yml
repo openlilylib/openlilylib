@@ -17,13 +17,19 @@ cache:
   directories:
   - $HOME/.lilypond
 
+install:
 # Download and install LilyPond (stable and devel)
 # when not present already (cached between builds)
-install:
   - python ./test/install_lilypond.py
+# Download script to install fonts
+# (this is currently not cached)
+  - git clone https://github.com/openlilylib/lily-fonts.git $HOME/.lily-fonts
 
-# This is the script that will actually run the tests
-script: ./test/automated_tests.py
+script:
+# download and install alternative notation fonts
+  - python $HOME/.lily-fonts/install-lily-fonts --batch --init --font-directory $HOME/.fonts --targets $HOME/.lilypond/lilypond
+# run the tests
+  - ./test/automated_tests.py
 
 # These are environment variables that are used to configure the
 # tests.
