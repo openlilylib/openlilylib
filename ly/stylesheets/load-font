@@ -42,17 +42,23 @@
 
 \paper {
   fonts = #(create-empty-font-tree) % no fonts are actually defined yet here
-  #(add-music-fonts fonts 'feta
+
+  #(add-music-font fonts 'feta
+     (string-append
     #{ \getOption stylesheets.font.use-name #}
-    #{ \getOption stylesheets.font.use-name #}
-     '((20 . 20)) (/ staff-height pt 20))
-  #(add-music-fonts fonts 'brace
-     #{ \getOption stylesheets.font.use-brace #}
-     #{ \getOption stylesheets.font.use-brace #}
-     '((20 . 20)) (/ staff-height pt 20))
+    "-11")
+    #{ \getOption stylesheets.font.use-brace #}
+     (/ staff-height pt 20))
+%  #(add-music-font fonts 'brace
+%     #{ \getOption stylesheets.font.use-brace #}
+%     #{ \getOption stylesheets.font.use-brace #}%
+%     (/ staff-height pt 20))
 
   #(add-pango-fonts fonts 'roman
     #{ \getOption stylesheets.font.roman #}
+    (/ staff-height pt 20))
+  #(add-pango-fonts fonts 'sans
+    #{ \getOption stylesheets.font.sans #}
     (/ staff-height pt 20))
 
 }
