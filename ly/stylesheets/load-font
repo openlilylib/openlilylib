@@ -41,10 +41,19 @@
 %}
 
 \paper {
-  #(define fonts
-    (set-global-fonts
-     #:music #{ \getOption stylesheets.font.use-name #}
-     #:brace #{ \getOption stylesheets.font.use-brace #}
-     #:factor (/ staff-height pt 20)))
+  fonts = #(create-empty-font-tree) % no fonts are actually defined yet here
+  #(add-music-fonts fonts 'feta
+    #{ \getOption stylesheets.font.use-name #}
+    #{ \getOption stylesheets.font.use-name #}
+     '((20 . 20)) (/ staff-height pt 20))
+  #(add-music-fonts fonts 'brace
+     #{ \getOption stylesheets.font.use-brace #}
+     #{ \getOption stylesheets.font.use-brace #}
+     '((20 . 20)) (/ staff-height pt 20))
+
+  #(add-pango-fonts fonts 'roman
+    #{ \getOption stylesheets.font.roman #}
+    (/ staff-height pt 20))
+
 }
 

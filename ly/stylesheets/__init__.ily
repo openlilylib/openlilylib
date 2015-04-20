@@ -49,6 +49,8 @@
 \registerOption stylesheets.font.use-name Emmentaler
 \registerOption stylesheets.font.brace Emmentaler
 \registerOption stylesheets.font.use-brace Emmentaler
+% Some text font defaults
+\registerOption stylesheets.font.roman "Century Schoolbook L"
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Determine installed notation fonts
