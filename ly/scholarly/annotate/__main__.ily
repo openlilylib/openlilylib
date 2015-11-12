@@ -54,13 +54,15 @@
 \include "export.ily"
 \include "export-latex.ily"
 \include "export-plaintext.ily"
+\include "export-raw-scheme.ily"
 
 % Define a lookup list for existing export procedures.
 % While this might be expected to be defined in the configuration
 % file it has to be inserted *after* the procedures have been defined
 #(define export-routines
    `(("latex" . ,export-annotations-latex)
-     ("plaintext" . ,export-annotations-plaintext)))
+     ("plaintext" . ,export-annotations-plaintext)
+     ("scheme" . ,export-annotations-raw-scheme)))
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
