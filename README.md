@@ -17,6 +17,11 @@ The former `openlilylib/openlilylib` repository has been renamed to `openlilylib
 The real repository and its issue tracker has been moved to https://github.com/openlilylib/snippets.
 
 This repository is **only** a copy that is identical per 2015/11/13. Its **only** purpose is not to break
+existing clones.  Please update your `remote` to `git@github.com:openlilylib/snippets.git` or `https://github.com/openlilylib/snippets.git` as soon as possible.
+
+If you have forked this repository please check where your fork refers to and where pull requests would
+eventually be opened against. 
+
 
 Contents
 ========
