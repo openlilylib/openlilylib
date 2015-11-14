@@ -13,7 +13,7 @@
 
 %%% The usual includes and module loading
 \include "openlilylib"
-\loadModule "gridly"
+\useLibrary "gridly"
 
 %%% Initialize the grid: three segments for a single part
 \gridInit 3 #'("clarinet")
@@ -23,30 +23,30 @@
 \gridPutMusic "clarinet" 1
 \with {
   transposeKey = a,
-}
-\relative c' {
-  \key c \major
-  c d e f |
+  music = \relative c' {
+    \key c \major
+    c d e f |
+  }
 }
 
 %%% Different cells can have different transposition keys
 \gridPutMusic "clarinet" 2
 \with {
-  transposeKey = c
-}
-\relative c' {
-  \key c \major
-  c d e f |
+  transposeKey = c,
+  music = \relative c' {
+    \key c \major
+    c d e f |
+  }
 }
 
 
 \gridPutMusic "clarinet" 3
 \with {
   transposeKey = a,
-}
-\relative c' {
-  \key c \major
-  c d e f |
+  music = \relative c' {
+    \key c \major
+    c d e f |
+  }
 }
 
 

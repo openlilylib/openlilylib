@@ -65,8 +65,11 @@ http://fonts.openlilylib.org.\n")
 #(define (use-font-extensions parser location name)
    (let ((filename (make-style-file name "extensions")))
      (if (file-exists? filename)
-         (ly:parser-include-string parser
+         (if (lilypond-greater-than? "2.19.21")
+         (ly:parser-include-string
            (ly:gulp-file filename))
+         (ly:parser-include-string parser
+           (ly:gulp-file filename)))
          (oll:warn location
            (format "No extensions available for font \"~a\". Skipping." name))
          )))
@@ -107,7 +110,7 @@ useNotationFont =
      (if
       (not (member use-name
              #{ \getChildOption global.installed-fonts
-                #(cond 
+                #(cond
                   ((eq? 'svg (ly:get-option 'backend))
                    'svg)
                   ((eq? 'svg-woff (ly:get-option 'backend))
@@ -157,16 +160,21 @@ useNotationFont =
        ;; issue a warning and reset to Emmentaler.
        (if (not (member use-brace
                   #{ \getChildOption global.installed-fonts
-                #(cond 
-                  ((eq? 'svg (ly:get-option 'backend))
-                   'svg)
-                  ((eq? 'svg-woff (ly:get-option 'backend))
-                   'woff)
-                  (else 'otf))
+                     % Construct the right subtree to be matched
+                     % according to the used backend.
+                     #(string->symbol
+                       (string-append
+                        (cond
+                         ((eq? 'svg (ly:get-option 'backend))
+                          "svg")
+                         ((eq? 'svg-woff (ly:get-option 'backend))
+                          "woff")
+                         (else "otf"))
+                        "-brace"))
                   #}))
            (begin
             (oll:warn location
-              (format "No \"~a\" brace font available for backend '~a. Use Emmentaler as default." 
+              (format "No \"~a\" brace font available for backend '~a. Use Emmentaler as default."
                 brace (ly:get-option 'backend)))
             (set! brace "Emmentaler")
             (set! use-brace "emmentaler")))
@@ -178,8 +186,8 @@ useNotationFont =
                 (file-exists? style-file)))
            (begin
             (oll:warn location
-              (format "Requested stylesheet \"~a\" doesn't exist for font \"~a\"" style name))
-            (set! style-file (make-style-file use-name style))))
+              (format "Requested stylesheet \"~a\" doesn't exist for font \"~a\". Skipping." style name))
+            (set! style-file #f)))
 
        ;; store options, these are used from the included load-font file
        #{ \setOption stylesheets.font.name #name #}
@@ -200,11 +208,14 @@ useNotationFont =
        ; I think one has to somehow access the current paper block
        ; through Scheme (I suspect there are options in the paper
        ; related ly: functions but I didn't succeed to find a solution).
-       (ly:parser-include-string parser
-         (format "\\include \"~a\""
-           (string-append
-            #{ \getOption global.root-path #}
-            "/stylesheets/load-font")))
+       (let ((arg 
+              (format "\\include \"~a\""
+                (string-append
+                 #{ \getOption global.root-path #}
+                 "/stylesheets/load-font"))))
+         (if (lilypond-less-than? "2.19.22")
+             (ly:parser-include-string parser arg)
+             (ly:parser-include-string arg)))
        (oll:log location
          (format "Font \"~a\" loaded successfully" name))
 
@@ -213,8 +224,11 @@ useNotationFont =
 
        ;; include the determined style file for the font
        ;; if not "none".
-       (if (not (string=? "none" style))
+       (if (and style-file (not (string=? "none" style)))
+           (if (lilypond-greater-than? "2.19.21")
+           (ly:parser-include-string 
+             (format "\\include \"~a\"" style-file))
            (ly:parser-include-string parser
-             (format "\\include \"~a\"" style-file)))
+             (format "\\include \"~a\"" style-file))))
        (oll:log location (format "Associated \"~a\" stylesheet loaded successfully" style))
        ))))

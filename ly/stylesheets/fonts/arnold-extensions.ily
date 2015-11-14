@@ -34,9 +34,9 @@
   useless if Arnold has not been activated with \useNotationFont.
 
   Additional articulations:
-  - \weakbeat
-  - \strongbeat
-  - \varaccent (alternative glyph for accent)
+  - \arnoldWeakbeat
+  - \arnoldStrongbeat
+  - \arnoldVaraccent (alternative glyph for accent)
 
   - \altAccent activates the varaccent to be used with -> or \accent
   - \defAccent reverts to the normal accent glyph
@@ -58,28 +58,24 @@
 % and simply copied from arbitrary existing articulations.
 % TODO:
 % Change glyph names for 'varaccent' when changed in font
-% TODO:
-% Change the glyph scaling once this is done in the font
 
 #(append! default-script-alist
    (list
-    `("weakbeat"
+    `("arnoldWeakbeat"
        . ((script-stencil . (feta . ("weakbeat" . "weakbeat")))
-          (font-size . 1.5)
           ; any other properties
           (toward-stem-shift-in-column . 0.0)
           (padding . 1)
           (avoid-slur . around)
           (direction . ,UP)))
-    `("strongbeat"
+    `("arnoldStrongbeat"
        . ((script-stencil . (feta . ("strongbeat" . "strongbeat")))
           ; any other properties
-          (font-size . -0.5)
           (toward-stem-shift-in-column . 0.0)
           (padding . 1)
           (avoid-slur . around)
           (direction . ,UP)))
-    `("varaccent"
+    `("arnoldVaraccent"
        . ((toward-stem-shift-in-column . 0.0)
           (script-stencil . (feta . ("varsforzato" . "varsforzato")))
           ; any other properties
@@ -89,9 +85,9 @@
     ))
 
 %%%% create postfix commands to use the articulations
-weakbeat = #(make-articulation "weakbeat")
-strongbeat = #(make-articulation "strongbeat")
-varaccent = #(make-articulation "varaccent")
+arnoldWeakbeat = #(make-articulation "arnoldWeakbeat")
+arnoldStrongbeat = #(make-articulation "arnoldStrongbeat")
+arnoldVaraccent = #(make-articulation "arnoldVaraccent")
 
 %%%% Switch between default and alternative accent glyphs.
 %%%% This can be changed during the music.
@@ -99,18 +95,14 @@ varaccent = #(make-articulation "varaccent")
 % Decide about the naming (altAccent is good but inconsistent)
 altAccent =
 #(define-void-function (parser location)()
-   (set! dashLarger varaccent))
+   (set! dashLarger arnoldVaraccent))
 
 defAccent =
 #(define-void-function (parser location)()
    (set! dashLarger accent))
 
 %%%% Add commands for typical Viennese School voicing indications
-% TODO
-% Check scaling once the glyphs have been updated in the font
-% And check glyph name of endstimme.
-scale-stimme = #-1.2
 
-hauptstimme = \markup { \fontsize #scale-stimme \halign #1 \musicglyph #"scripts.hauptstimme" }
-nebenstimme = \markup { \fontsize #scale-stimme \halign #1 \musicglyph #"scripts.nebenstimme" }
-endstimme = \markup { \fontsize #scale-stimme \halign #-1.5 \musicglyph #"scripts.endvoice" }
+hauptstimme = \markup { \halign #1 \musicglyph #"scripts.hauptstimme" }
+nebenstimme = \markup { \halign #1 \musicglyph #"scripts.nebenstimme" }
+endstimme = \markup { \halign #-1.5 \musicglyph #"scripts.endstimme" }

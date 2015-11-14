@@ -10,19 +10,18 @@ There are two reasons:
 * Some things cannot be placed in LSR (multi-file extensions, special scripts).
 * LSR doesn't have tools for collaboration and version control.
 
-<!---
-At some point in the future we may develop a nice web frontend for this repository;
-we would also like to integrate it with the core LilyPond project similarly to
-how stuff from LSR is imported into official documentation.
-We may also move this repository somewhere else, because we dislike the proprietary
-nature of GitHub.
--->
+Deprecation Warning!
+====================
 
-**[EDIT:** *Currently `openLilyLib` is undergoing a fundamental reorganization.  
-The below README contents is about the* current *implementation as a 
-collection of arbitrary snippets.  
-The new structure as a collection of targeted libraries can be found inside
-the `ly` directory.]*
+The former `openlilylib/openlilylib` repository has been renamed to `openlilylib/snippets`.
+The real repository and its issue tracker has been moved to https://github.com/openlilylib/snippets.
+
+This repository is **only** a copy that is identical per 2015/11/13. Its **only** purpose is not to break
+existing clones.  Please update your `remote` to `git@github.com:openlilylib/snippets.git` or `https://github.com/openlilylib/snippets.git` as soon as possible.
+
+If you have forked this repository please check where your fork refers to and where pull requests would
+eventually be opened against. 
+
 
 Contents
 ========
@@ -32,7 +31,7 @@ Contents
 * [__debugging-layout__](debugging-layout) -
     tools that visualize LilyPond's layout decisions (e.g. directions),
 * [__general-tools__](general-tools) -
-    stuff for working on and with LilyPond itself.
+    stuff for working on and with LilyPond itself,
 * [__input-shorthands__](input-shorthands) -
     music functions and other tools that make writing LilyPond code easier,
 * [__notation-snippets__](notation-snippets) -
@@ -70,7 +69,7 @@ Using this repository
 =====================
 
 You can view the files in your browser by clicking on their names,
-and simply copy&paste the code into your editor. You can also
+and simply copy & paste the code into your editor. You can also
 [download](https://github.com/openlilylib/snippets/archive/master.zip)
 the whole repository in a ZIP archive.  This is recommended for casual use.
 For regular users, we recommend using [Git](http://git-scm.com/)
