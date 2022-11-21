@@ -1,0 +1,33 @@
+[submodule "oll-core"]
+	path = oll-core
+	url = https://github.com/openlilylib/oll-core
+[submodule "edition-engraver"]
+	path = edition-engraver
+	url = https://github.com/openlilylib/edition-engraver
+[submodule "breaks"]
+	path = breaks
+	url = https://github.com/openlilylib/breaks
+[submodule "page-layout"]
+	path = page-layout
+	url = https://github.com/openlilylib/page-layout
+[submodule "partial-compilation"]
+	path = partial-compilation
+	url = https://github.com/openlilylib/partial-compilation
+[submodule "analysis"]
+	path = analysis
+	url = https://github.com/openlilylib/analysis
+[submodule "ji"]
+	path = ji
+	url = https://github.com/openlilylib/ji
+[submodule "notation-fonts"]
+	path = notation-fonts
+	url = https://github.com/openlilylib/notation-fonts
+[submodule "oll-misc"]
+	path = oll-misc
+	url = https://github.com/openlilylib/oll-misc
+[submodule "stylesheets"]
+	path = stylesheets
+	url = https://github.com/openlilylib/stylesheets
+[submodule "scholarly"]
+	path = scholarly
+	url = https://github.com/openlilylib/scholarly
